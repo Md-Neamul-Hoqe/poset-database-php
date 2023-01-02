@@ -1,0 +1,30 @@
+[
+    {
+        "type": "header",
+        "version": "5.2.0",
+        "comment": "Export to JSON plugin for PHPMyAdmin"
+    },
+    {
+        "type": "database",
+        "name": "posets"
+    },
+    {
+        "type": "table",
+        "name": "users",
+        "database": "posets",
+        "data": [
+            {
+                "idx": "1",
+                "user_name": "neamul",
+                "password": "@@@",
+                "fullName": "Muhammad Neamul Hoqe"
+            },
+            {
+                "idx": "2",
+                "user_name": "msu",
+                "password": "msu",
+                "fullName": "Prof. Dr. Muhammad Salah Uddin"
+            }
+        ]
+    }
+]
