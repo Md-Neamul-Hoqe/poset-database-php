@@ -14,8 +14,15 @@ Table Of Contents:
 /*     General Styles     */
 /**************************/
 
+
 /* Fonts Online Link */
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@100&family=Exo:wght@100&display=swap');
+
+/* Remove After Live Upload */
+@font-face {
+	font-family: "Exo 2";
+	src: url(../../fonts/Exo2-Thin.ttf);
+}
 
 * {
 	font-family: sans-serif;
@@ -69,6 +76,10 @@ canvas[id|=poset] {
 	transform: rotate(-90deg);
 }
 
+#poset~a {
+	top: 100px;
+}
+
 #IsOff>span {
 	margin-top: 0;
 	padding-top: 0;
@@ -84,7 +95,7 @@ canvas[id|=poset] {
 
 /* Matrix Formating */
 :root {
-	--morder-font-size: 3.125rem;
+	--morder-font-size: 3.175rem;
 }
 
 .border-start-end::before {
@@ -235,6 +246,35 @@ label {
 #searchedTable td,
 #searchedTable th {
 	text-align: center;
+}
+
+#widthHight {
+	position: relative;
+	height: 60px;
+}
+
+#widthHight span {
+	position: absolute;
+	z-index: 2;
+}
+
+#widthHight span:nth-child(3) {
+	top: 5px;
+	right: 5px;
+}
+
+#widthHight span:nth-child(2) {
+	left: 10px;
+	bottom: 0;
+}
+
+#Diagonal {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: -99;
 }
 
 .updateTable tr:nth-child(2) td,

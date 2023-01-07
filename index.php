@@ -23,7 +23,7 @@
                               $sqlQuery = "SELECT DISTINCT allposets.`MatrixOrder` FROM allposets";
                               $result = mysqli_query($conn, $sqlQuery) or die("Sorry. Required Data Not Found In Database." . mysqli_errno($conn) . ": " . mysqli_error($conn));
 
-                              // $num = $result->num_rows;
+                              // $num = $result->num_rows;        
                               while ($Orders = mysqli_fetch_assoc($result)) {
                                    echo "<option value='$Orders[MatrixOrder]' class='fs-5'>Order $Orders[MatrixOrder]</option>";
                               }
@@ -68,6 +68,9 @@
                                                        <!-- Clear The Canvas -->
                                                        <input type="submit" onclick="resetCanvas()" value="Clear" class="position-absolute fixed-right border-1 border-dark btn btn-light text-danger">
 
+                                                       <!-- Learn How to draw -->
+                                                       <a href="./drawingProcess.php" type="submit" class="position-absolute fixed-right border-1 border-dark btn btn-light text-info">How To Draw?</a>
+
                                                        <!-- Submit The Poset -->
                                                        <input onclick="getMatrix()" name="submitPoset" type="submit" class="text-decoration-none text-light border btn btn-lg btn-dark" value="Submit">
                                                        <!-- <input onclick="getMatrix()" name="submitPoset" type="submit" class="text-decoration-none text-success border" data-bs-dismiss="modal" aria-label="Close"> -->
@@ -78,7 +81,6 @@
                               </div>
                               <div class="modal-footer">
                                    <div id="ShowErrors" class="error"></div>
-                                   <!-- <div id="Coords" class="text-info bg-gradient"></div> -->
                               </div>
                          </div>
                     </div>
@@ -121,8 +123,8 @@
                     <tbody>
                          <tr>
                               <td><?php echo $nelements = 01; ?></td>
-                              <td><a href='<?php echo "uconnposets.php?nthelements=$nelements&tableName=$tableName[1]"; ?>'> 1</a></td>
-                              <td><a href='<?php echo "uconnposets.php?nthelements=$nelements&tableName=$tableName[2]"; ?>'> 0</a></td>
+                              <td><a href='#'> 1</a></td>
+                              <td><a href='#'> 0</a></td>
                               <td>1</td>
                          </tr>
                          <tr>

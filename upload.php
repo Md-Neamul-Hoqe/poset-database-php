@@ -67,7 +67,7 @@
             include "db_conn.php";
             /* Update Height & Width To Allposets From connposets & disconnposets, if difference found */
             if (isset($_POST["update"])) {
-                echo "Updating To Allposets Table.";
+                echo "Updating To Allposets Table.<br/>";
 
                 /* connposets to allposets */
                 $SelectionQuery = "SELECT allposets.`idx`, allposets.`Height`, connposets.`Height`, connposets.`Width` From allposets, connposets where allposets.`Matrix` = connposets.`Matrix`";
@@ -81,7 +81,7 @@
 
                 /* Check Connection Error */
                 if (!$SelectionRun) {
-                    echo "Error Found";
+                    echo "Error Found - ", mysqli_error($conn);
                     exit();
                 }
                 // $nums = mysqli_num_rows($SelectionRun);
@@ -93,7 +93,7 @@
                         $Height = $SelectedRows[2];
                         $Width = $SelectedRows[3];
                         if ($SelectedRows[1] != $Height) {
-                            echo "$SelectedRows[1] & $Height Are Not Same.";
+                            echo "$SelectedRows[1] & $Height Are Not Same.<br/>";
                             $updateQuery = "UPDATE `allposets` SET `Height` = '$Height', `Width` = '$Width' WHERE `allposets`.`idx` = '$idx'";
                             $updateRun = mysqli_query($conn, $updateQuery) or die("Error Found-" . mysqli_errno($conn) . " Error:" . mysqli_error($conn));
                         }
@@ -101,7 +101,7 @@
                         // print_r($SelectedRows);
                         // echo "</pre>";
                     }
-                    echo "Update Succesfull 'connposets'.";
+                    echo "Update Succesfull From 'Connected Posets' Table.<br/>";
                 }
 
                 /* disconnposets To allposets */
@@ -127,7 +127,7 @@
 
                         /* Update Only Different Heights & Widths */
                         if ($SelectedRows1[1] != $Height) {
-                            echo "$SelectedRows1[1] & $Height Are Not Same.";
+                            echo "$SelectedRows1[1] & $Height Are Not Same.<br/>";
                             $updateQuery = "UPDATE `allposets` SET `Height` = '$Height', `Width` = '$Width' WHERE `allposets`.`idx` = '$idx1'";
                             $updateRun = mysqli_query($conn, $updateQuery) or die("Error Found-" . mysqli_errno($conn) . " Error:" . mysqli_error($conn));
                         }
@@ -135,7 +135,7 @@
                         // print_r($SelectedRows1);
                         // echo "</pre>";
                     }
-                    echo "Update Succesfull For 'disconnposets'.";
+                    echo "Update Succesfull From 'Dis-Connected Posets' Table.<br/>";
                 }
             }
 
@@ -223,7 +223,7 @@
                             //     continue;
                             // }
 
-                            // CHECK THE TABLE IS ALREADY EXIST
+                            // CHECK THE TABLE EXISTS
                             $query = "SELECT $tableName[0].`idx` FROM $tableName[0]";
                             $result = mysqli_query($conn, $query);  // Can Select or Not
 
@@ -283,12 +283,12 @@
                                     // echo "<br>The Width is ";
                                     // echo ($Width > 0) ? $Width : "Not Set" . "<br>";
 
-                                    if ($Height > 0 || $Width > 0) {
+                                    if ($Height > 0 && $Width > 0) {
                                         echo " With Height ", $Height, " & Width ", $Width;
                                     } else {
                                         /* If Height or Width Not set properly then don't upload this file */
                                         // continue;
-                                        echo "<br>But Height & Width Not Set.";
+                                        echo "<br>But Height Or Width Not Set.";
                                     }
                                     // echo "<br> The Number of Lines in this file is " . 
 
@@ -296,7 +296,7 @@
                                     $linesInFile = count($Files);
                                     $nthMatrix = preg_split("/[,]+/", "$Files[0]");
                                     $numElementofaM = sizeof($nthMatrix);
-                                    echo "<br> The Number of Elements in a line is " . $numElementofaM . " & no. of lines are " . $linesInFile;
+                                    echo "<br> The no. of Elements in a line is " . $numElementofaM . " & no. of lines is " . $linesInFile;
                                     $lines = 0;
                                     while ($lines < $linesInFile) {     // RUN THE LOOP UPTO EOF'S LINES || fgets() not work with array.
                                         $ExtractMFromFile = trim($Files[$lines]);
@@ -324,6 +324,8 @@
                                         // exit;
                                         $queryFind  = "SELECT $tableName[0].`idx` FROM $tableName[0] WHERE $tableName[0].`Matrix` IN ('$Matrix')";
                                         $Find_1 = mysqli_query($conn, $queryFind);
+
+                                        /* To use the associative index later */
                                         $rows = mysqli_fetch_assoc($Find_1);
                                         // echo "<pre>";
                                         // print_r($Find_1);
@@ -357,7 +359,7 @@
                                             // echo "Old Matrix Found";
                                             // $updateQuery = "UPDATE `$tableName[0]` SET `Height` = $Height, `Width` = $Width, `idx` = $tableName.idx WHERE $tableName[0].`Matrix` = '$Matrix' AND $tableName[0].`Height` <> $Height";
 
-                                            $updateQuery = "UPDATE `$tableName[0]` SET `Height` = '$Height', `Width` = '$Width' WHERE `$tableName[0]`.`idx` = $rows[idx] AND `$tableName[0]`.`Matrix` = '$Matrix' AND $tableName[0].`Height` <> $Height";
+                                            $updateQuery = "UPDATE `$tableName[0]` SET `Height` = '$Height', `Width` = '$Width' WHERE `$tableName[0]`.`idx` = $rows[idx] AND `$tableName[0]`.`Matrix` = '$Matrix' AND $tableName[0].`Height` <> $Height OR $tableName[0].`Width` <> $Width";
                                             $updateRun = mysqli_query($conn, $updateQuery);
                                             // echo "Updated Height ", $Height, " & Width ", $Width;
                                             $updated = true;
@@ -373,7 +375,7 @@
                                                 <td class="border fs-5 text-center"> <?php echo $Matrix ?></td>
                                             </tr>
                                             <tr>
-                                                <td class="border fs-5 text-center" colspan="4"> <?php echo (!$updated) ? "<span class='error border border-dark text-center mx-auto'>" . mysqli_errno($conn) . ": The Matrix \" $Matrix \" already exists in \" $tableName[0] \".</span><br/>" : "Updated Height as ", $Height, " & Width", $Width; ?> </td>
+                                                <td class="border fs-5 text-center" colspan="5"> <?php echo (!$updated) ? "<span class='error border border-dark text-center mx-auto'>" . mysqli_errno($conn) . ": The Matrix \" $Matrix \" already exists in \" $tableName[0] \".</span><br/>" : "Updated Height as ", $Height, " & Width ", $Width; ?> </td>
                                             </tr>
                                     <?php
                                             // exit;
@@ -383,7 +385,7 @@
                                     }   //===  END WHILE ($LINES < $LINESINFILE) 
                                     ?>
                                     <tr class="min-vw-100">
-                                        <td class="border fs-5 text-center border border-danger border-3" colspan="4">
+                                        <td class="border fs-5 text-center border border-danger border-3" colspan="5">
                                             <?php
                                             echo "<br/><span class='text-info'>Note:</span> <span class='text-danger'>$numUploadedM </span>New Matrices of Order $MOrder Uploaded From '$filename' named file to $Status table '$tableName[0]' in database '$db_name'.";
                                         } else {

@@ -20,7 +20,7 @@ include "header.php";
             <?php
 
             // Tables Name From Database 
-            $tableName = ["connposets", "disconnposets"];
+            // $tableName = ["connposets", "disconnposets"];
             // if (isset($_GET['totalPosets']) and !empty($_GET['MOrder'])) {
             $POrder = 16; //    $_GET["MOrder"];
 
@@ -50,7 +50,7 @@ include "header.php";
         /* Search All Posets With Height For Certain Order -> index.php */
         function tableFormate($tableName, $nelements)
         { ?>
-            <table class="table table-striped-columns table-striped">
+            <table class="table table-striped-columns table-striped text-center">
                 <thead>
                     <tr class="text-center fs-3">
                         <th colspan="<?php echo $nelements + 1; ?>" class="text-capitalize">No. of Unlabeled <?php echo $tableName ?> Posets With <?php echo $nelements ?> Elements</th>
@@ -73,11 +73,12 @@ include "header.php";
 
                                 /* Header for Width */
                                 if ($j == 0) {
-                                    echo "<th class='text-center; fs-5'><span style = 'vertical-align: bottom; text-nowrap;'>Height<wbr>&Downarrow; </span><span style = 'font-size: xxx-large; padding-left: 15px; padding-right: 15px;'>\</span> <span style = 'vertical-align: top'>Width<wbr>&Rightarrow;</span></th>";
+                                    echo "<th id='widthHight' class='text-center fs-5'><canvas id='Diagonal' class='bg-transparent border-0' width='100%' height='100%'></canvas><span>Height&nbsp;&Downarrow; </span><span>Width&nbsp;&Rightarrow;</span></th>";
+                                    // echo "<th id='widthHight' class='text-center; fs-5'><span style = 'vertical-align: bottom; text-nowrap;'>Height<wbr>&Downarrow; </span><span style = 'font-size: xxx-large; padding-left: 15px; padding-right: 15px;'>\</span> <span style = 'vertical-align: top'>Width<wbr>&Rightarrow;</span></th>";
                                 } else if ($j == $nelements) {
-                                    echo "<th class='text-center; fs-5'>Total</th>";
+                                    echo "<th class='text-center fs-5'>Total</th>";
                                 } else {
-                                    echo "<th class='text-center; fs-5'>$j</th>"; ?>
+                                    echo "<th class='text-center fs-5'>$j</th>"; ?>
                                     <script>
                                         /* Initialise Before Count For Width */
                                         var totalW_<?= $j ?> = 0;
@@ -156,7 +157,7 @@ include "header.php";
                             if ($i == 0) {
                                 /* Header for Width */
                                 if ($j == 0) {
-                                    echo "<th class='text-center;fs-5;'><span style = 'vertical-align: bottom; text-nowrap;'>No. of Direct Terms<wbr>&Downarrow; </span><span style = 'font-size: xxx-large; padding-left: 15px; padding-right: 15px;'>\</span> <span style = 'vertical-align: top'>No. of<wbr>&Rightarrow;</span></th>";
+                                    echo "<th id='widthHight' class='text-center fs-5'><canvas id='Diagonal' class='bg-transparent border-0' width='100%' height='100%'></canvas><span>No.&nbsp;of&nbsp;Direct&nbsp;Terms&nbsp;&Downarrow; </span><span>No.&nbsp;of&nbsp;&Rightarrow;</span></th>";
                                 } else if ($j == $nelements) {
                                     echo "<th class='text-center; fs-5'>Total</th>";
                                 } else {
@@ -230,5 +231,17 @@ include "header.php";
         }
 
         ?>
+
+        <script>
+            myDiag = document.getElementById("Diagonal").getContext("2d");
+            width = myDiag.width;
+            height = myDiag.height;
+
+            // console.log(width, height);
+            // myDiag.color = "blue";
+            myDiag.moveTo(0, 0);
+            myDiag.lineTo(100, 100);
+            myDiag.stroke();
+        </script>
     </footer>
     <?php include "footer.php"; ?>

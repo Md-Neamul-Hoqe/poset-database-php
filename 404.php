@@ -23,9 +23,13 @@
      </header>
      <!-- This is content part of the page  -->
      <main class="content-wrapper py-3 text-center">
-          <h2 class="fs-1 fw-bolder text-bg-info">Sorry! We Are Not Found</h2>
-          <p>Please Check Your Database Connection.</p>
-          <p>Then Go To <a href="./index.php"> Home Page </a></p>
+          <h2 class="fs-1 fw-bolder text-bg-info">Sorry! Page Is Not Found</h2>
+          <h4>You Can Try These: </h4>
+          <p>Check Your Database Connection.</p>
+          <p>Check Your Internet Connection</p>
+          <p>Check Your Firewall or Antivirous</p>
+          <p>If Not Fixed After All Those Method Applied. Please Reload Or Try Later.</p>
+          <p>Go To <a href="./index.php"> Home Page </a></p>
      </main>
      <footer class="big-footer">
           <!-- This is footer part of the page  -->

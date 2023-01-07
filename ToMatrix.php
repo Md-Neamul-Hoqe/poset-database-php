@@ -45,12 +45,6 @@ include "script.php";
     <a class="bg-success bg-opacity-25 rounded-5" href="#" id="myBtn"><img title='Poset-Matrix' src="./styles/assets/images/backToTop.png" alt="Back To Top"></a>
 
     <main class="content-wrapper pt-5 mt-5 min-vh-100">
-        <!-- Draw The Poset Which is just Inputed to search -->
-        <!-- <div class="text-center" data-bs-content="Draw The Hasse Diagram of The Poset Matrix.">
-            <canvas id="poset" width="200" height="200" class="border border-4 border-dark shadow-lg p-0">
-                Sorry! Canvas Is Not Supported In Your Browser. Please Search manually.
-            </canvas>
-        </div> -->
         <?php
         // echo "<pre>";
         // print_r($_GET);
@@ -76,12 +70,6 @@ include "script.php";
                 SELength = selectedElements.length;
                 // console.table(selectedElements);
             </script>
-            <!-- Draw The Poset Which is just Inputed to search -->
-            <!-- <div class="text-center">
-                <canvas id="poset" width="200" height="200" class="border border-4 border-dark shadow-lg p-0">
-                    Sorry! Canvas Is Not Supported In Your Browser. Please Search manually.
-                </canvas>
-            </div> -->
             <?php
             // exit();
             $table = "allposets";
@@ -220,6 +208,7 @@ include "script.php";
                 Search Interval 
                 ############################################### -->
 
+                <p class="bg-info text-dark bg-opacity-25 text-center rounded fs-6 fw-bolder py-2">Take A Short Range To Convenient Search</p>
                 <form id="IntervalForm" action="<?php $_SERVER['PHP_SELF']; ?>" method="POST" class="d-flex border-bottom border-5 border-dark mb-3 rounded-4">
                     <label for="min" hidden>Enter The Min Index No.</label>
                     <input id="Min" class="form-control me-2" placeholder="<?php echo isset($_POST['MIN']) ? $_POST['MIN'] : 'Search From 0'; ?>" type="search" name="MIN" id="searchMin">
@@ -227,7 +216,6 @@ include "script.php";
                     <input id="Max" class="form-control" placeholder='<?php echo isset($_POST["MIN"]) ? $_POST["MAX"] : "Search Up To $num"; ?>' type="search" name="MAX" id="searchMax">
                     <input class="ms-2" type="submit" value="Search...">
                 </form>
-                <p class="bg-warning text-info bg-opacity-25 text-center rounded fs-6 fw-bolder py-2">Take A Short Range To Convenient Search</p>
 
                 <!-- Show The Search Result In Matrix With Figure Form -->
                 <?php
@@ -298,27 +286,47 @@ include "script.php";
                                             echo "<hr>";
                                             if ($MatrixNo == $Max and $Max < $num) {
                                             ?>
-                                                <button onclick="SearchNext10()" class='border border-3 border-success p-2 rounded'>See More >></button>
+                                                <!-- <button onclick="SearchNext10(-1)" class='border border-3 border-success p-2 rounded'>&#8810;</button> << -->
+                                                <button onclick="SearchNext10()" class='border border-3 border-success p-2 rounded'>&#8811;</button> <!-- >> -->
                                                 <script>
                                                     /**
                                                      * Show Next 10 Posets On Click The Button
                                                      */
                                                     function SearchNext10() {
-                                                        <?php
-                                                        if (isset($_POST["Min"])) {
-                                                            $_POST["Min"] = $MatrixNo;
-                                                        }
-                                                        echo isset($_POST["Max"]);
-                                                        if (isset($_POST["Max"])) {
-                                                            $_POST["Max"] = ($MatrixNo + $Interval > $num) ? $num : $MatrixNo + $Interval;
-                                                        }
-                                                        ?>
-                                                        document.getElementById('Min').value = "<?php echo $MatrixNo ?>";
-                                                        document.getElementById('Max').value = "<?php echo ($MatrixNo + $Interval > $num) ? $num : ($MatrixNo + $Interval)
-                                                                                                ?>";
+                                                        if (x > 0) {
+                                                            <?php
+                                                            if (isset($_POST["Min"])) {
+                                                                $_POST["Min"] = $MatrixNo;
+                                                            }
+                                                            echo isset($_POST["Max"]);
+                                                            if (isset($_POST["Max"])) {
+                                                                $_POST["Max"] = ($MatrixNo + $Interval > $num) ? $num : $MatrixNo + $Interval;
+                                                            }
+                                                            ?>
+                                                            document.getElementById('Min').value = "<?php echo $MatrixNo ?>";
+                                                            document.getElementById('Max').value = "<?php echo ($MatrixNo + $Interval > $num) ? $num : ($MatrixNo + $Interval)
+                                                                                                    ?>";
 
-                                                        document.getElementById("IntervalForm").submit();
-                                                        return;
+                                                            document.getElementById("IntervalForm").submit();
+                                                            return;
+                                                        } 
+                                                        // else {
+                                                            // <?php
+                                                            // if (isset($_POST["Min"])) {
+                                                                // $_POST["Min"] = $MatrixNo;
+                                                            // }
+                                                            // echo isset($_POST["Max"]);
+                                                            // if (isset($_POST["Max"])) {
+                                                                // $_POST["Max"] = ($MatrixNo + $Interval > $num) ? $num : $MatrixNo + $Interval;
+                                                            // }
+                                                            // ?>
+                                                            // document.getElementById('Min').value = "<?php echo $MatrixNo ?>";
+                                                            // document.getElementById('Max').value = "<?php echo ($MatrixNo + $Interval > $num) ? $num : ($MatrixNo + $Interval)
+                                                                                                    // ?>";
+// 
+                                                            // document.getElementById("IntervalForm").submit();
+                                                            // return;
+                                                        // }
                                                     }
                                                 </script>
                                             <?php
@@ -424,10 +432,13 @@ include "script.php";
                         <script>
                             // console.log("What is this?");
                             /* For Drawing (canvas) Tool */
-                            var poset = document.getElementById("poset-Draw").getContext("2d"),
-                                width = (document.getElementById("poset-Draw").width = (morder + 1) * x),
-                                height = (document.getElementById("poset-Draw").height = (morder + 1) * x);
-                            // console.log(poset);
+                            var Poset = document.getElementById("poset-Draw");
+                            var poset = Poset.getContext("2d"),
+                                width = (Poset.width = (morder + 1) * x),
+                                height = (Poset.height = (morder + 1) * x);
+                            Poset.className = "border-0";
+                            poset.rect(x - 12, x - 12, width - x * 1.5, height - x * 1.5);
+                            poset.clip();
                             reDraw();
                         </script>
                     <?php
@@ -454,12 +465,7 @@ include "script.php";
                                                                                                                                                                     ?>' alt='Poset-Matrix Figure Goes Here.' width='150'></a></td> -->
 
                 <script>
-                    // console.log(poset);
-                    // var poset = document.getElementById("poset").getContext("2d"),
-                    //     width = (document.getElementById("poset").width = (morder + 1) * x),
-                    //     height = (document.getElementById("poset").height = (morder + 1) * x);
                     var matrixBeforeAfter = document.querySelector("#matrix-<?= $Matrix ?>");
-                    // console.log(matrixBeforeAfter);
                     /* Set The Size Of The Paranthisis (Matrix Notation) According To Matrix Size */
                     if (matrixBeforeAfter) {
                         matrixBeforeAfter.style.setProperty("--morder-font-size", "<?php echo $MOrder * 35 ?>px");
