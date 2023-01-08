@@ -91,7 +91,7 @@
                <!-- ############################### SEARCHED RESULT / OUTPUT Counter Table ######################################### -->
                <?php
 
-               /* TABLES NAMES FROM DATABASE */
+               /* TABLE NAMES FROM DATABASE */
                $queryTable = "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'Posets' AND TABLE_NAME <> 'users';";
                $sql = mysqli_query($conn, $queryTable);
                if (mysqli_num_rows($sql) > 0) {

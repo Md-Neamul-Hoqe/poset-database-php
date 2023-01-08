@@ -50,7 +50,6 @@ include "script.php";
         // print_r($_GET);
         // echo "</pre>";
 
-        // $MOrder = 5;
         /**
          * ####################################################
          * Search By Drawing Tool
@@ -72,7 +71,7 @@ include "script.php";
             </script>
             <?php
             // exit();
-            $table = "allposets";
+            // $table = "allposets";
             $Posets = "The";        // Allposets = The Posets
 
             /* REMOVE ',' FROM GIVEN MATRIX To count size of the matrix */
@@ -96,16 +95,11 @@ include "script.php";
             }
             // $Matrix = trim($ExtractElements);
             $Matrix = $ExtractElements;
-            // $rowR = trim($Matrix);
-            // echo "Table: ", $table, " Height: ", $Height, " Width: ", $Width;
-            // echo $table, $MOrder, $Matrix;
+            // echo "allposets ", $MOrder, $Matrix;
 
-            $stmt_1 = "SELECT $table.`Matrix`, $table.`Height`, $table.`Width` FROM $table WHERE `Matrix` = '$Matrix'";
+            $stmt_1 = "SELECT `allposets`.`Matrix`, `allposets`.`Type` FROM `allposets` WHERE `Matrix` = '$Matrix'";
             $result = mysqli_query($conn, $stmt_1);
             ($result) ? ($num = mysqli_num_rows($result)) : die("<div class='error'>Error-" . mysqli_errno($conn) . ": Error - " . mysqli_error($conn) . "</div>");
-            // $stmt_1 = "SELECT $table.`Matrix`, $table.`Height`, $table.`Width` FROM $table WHERE `MatrixOrder` = $MOrder AND `Matrix` = '$Matrix'";
-            // echo $stmt_1;
-            // $searchBoxShow = false;
 
             echo '<div id="searchedTable" class="mx-auto mt-5">';
             if ($num > 0) {
@@ -125,8 +119,26 @@ include "script.php";
                         // echo "<pre>";
                         // print_r($row[0]);
                         // echo "</pre>";
-                        $Height = $row[0][1];
-                        $Width = $row[0][2];
+                        if ($row[0][1] == 'con') {
+                            // connposets = '';
+                            $type = "Connected";
+                            $stmt_1 = "SELECT `connposets`.`Matrix`, `connposets`.`Height`, `connposets`.`Width` FROM `connposets` WHERE `Matrix` = '$Matrix'";
+                        } else {
+                            // $table = 'disconnposets';
+                            $stmt_1 = "SELECT `disconnposets`.`Matrix`, `disconnposets`.`Height`, `disconnposets`.`Width` FROM `disconnposets` WHERE `Matrix` = '$Matrix'";
+                            $type = "Dis-Connected";
+                        }
+
+                        $getHeightWidth = mysqli_query($conn, $stmt_1);
+                        $HeightWidth = mysqli_fetch_assoc($getHeightWidth);
+                        // print_r($getHeightWidth);
+                        if (!$getHeightWidth) {
+                            echo "<div class='error'>Please Upload $type Poset-Matrix. <br/> There are no matrix related to $type-posets.</div>";
+                        } else if ($HeightWidth > 0) {
+                            // print_r($HeightWidth);
+                            $Height = (isset($HeightWidth["Height"])) ? $HeightWidth["Height"] : 0;
+                            $Width = (isset($HeightWidth["Width"])) ? $HeightWidth["Width"] : 0;
+                        }
                         // echo $Max;
                         // while ($MatrixNo <= $Max) {
                         ?>
@@ -146,7 +158,7 @@ include "script.php";
                                 // if(isset())
                                 /* Header of The Poset */
                                 // echo "<span class='fs-3'>The best match for your search by &lt;'Drawing Tool'&gt; </span><br>";
-                                echo "<span class='fs-6'>The Height is ", (($Height > 0) ? $Height : 'Not Identified') . "&nbsp;&&nbsp;Width&nbsp;is&nbsp;" . (($Width > 0) ? $Width : 'Not Identified'), " of the poset.</span>";
+                                echo "<span class='fs-6'>The Height is ", ((isset($Height) && $Height > 0) ? $Height : $Height = 'Not Identified') . "&nbsp;&&nbsp;Width&nbsp;is&nbsp;" . ((isset($Width) && $Width > 0) ? $Width : $Width = 'Not Identified'), " of the poset.</span>";
                                 // echo $MatrixNo . "<sup>" . $place . "</sup> Matrix <hr style='border: 2px solid; border-radius: 100%;'/>";
 
                                 // echo $row[$MatrixNo - 1][0];
@@ -162,7 +174,6 @@ include "script.php";
                 // } // WHILE LOOP CLOSEED
             } else {
                 echo "<div class='error mt-5'>Sorry! There have no such kind of poset exist.</div>";
-                // echo "<div class='error mt-5'>No Posets Found For $MOrder Elements</div>";
             } // IF CONDITION END
                 ?>
                 </div>
@@ -178,24 +189,32 @@ include "script.php";
         } else if (isset($_GET["Height"]) && isset($_GET["Width"])) {
 
             // Catch The Order & Height From index.html throw by get method
-
-            // $table = "allposets";
             // $table = "connposets";
+            // $table = "disconnposets";
             $table = $_GET["Table"];
 
             // $Posets = "All";
             $Posets = ($table == "connposets") ? "Connected" : (($table == "disconnposets") ? "Dis-Connected" : "All");
 
-            /* Manually Searching Portion */
+
+            /**
+             * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+             *  Manually Searching Portion 
+             * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+             * */
             $Height = $_GET["Height"];
             $Width = $_GET["Width"];
 
             // echo "Table: ", $table, " Height: ", $Height, " Width: ", $Width;
 
-            // echo "Now you are searching the poset menually with Order: ", $MOrder;
+            if ((is_numeric($Height) && $Height > 0 && is_numeric($Width) && $Width > 0)) {
+                $stmt_1 = "SELECT $table.`Matrix` FROM $table WHERE `MatrixOrder` = $MOrder AND `Height` = $Height ORDER BY $table.`Matrix` ASC"; // Not Ok remove when all uploaded
+                // $stmt_1 = "SELECT $table.`Matrix` FROM $table WHERE `MatrixOrder` = $MOrder AND `Height` = $Height AND `Width` = $Width ORDER BY $table.`Matrix` ASC"; // Ok
+            } else {
+                $stmt_1 = "SELECT $table.Matrix FROM $table WHERE MatrixOrder = $MOrder ORDER BY $table.Matrix ASC";
+            }
 
-            // $stmt_1 = "SELECT $table.Matrix FROM $table WHERE MatrixOrder = $MOrder AND Height = $Height AND Width = $Width ORDER BY $table.Matrix ASC";
-            $stmt_1 = "SELECT $table.Matrix FROM $table WHERE MatrixOrder = $MOrder AND Height = $Height ORDER BY $table.Matrix ASC";
+            // $stmt_1 = "SELECT $table.`Matrix` FROM $table WHERE `MatrixOrder` = $MOrder ORDER BY $table.`Matrix` ASC";
             // $searchBoxShow = true;
             $result = mysqli_query($conn, $stmt_1);
             $num = mysqli_num_rows($result);
@@ -241,8 +260,8 @@ include "script.php";
                             <div class="col text-center fs-3">
                                 <?php
                                 echo "<h1 class='fs-3'>$Posets Poset-Matrices For $MOrder Elements";
-                                echo (isset($Height)) ? " With&nbsp;Height&nbsp;" . $Height : '';
-                                echo ((isset($Width)) ? "&nbsp;&&nbsp;Width&nbsp;" . $Width :  "</h1>");
+                                echo (isset($Height) && $Height > 0) ? " With&nbsp;Height&nbsp;" . $Height : '';
+                                echo ((isset($Width) && $Width > 0) ? "&nbsp;&&nbsp;Width&nbsp;" . $Width . "</h1>" :  "</h1>");
                                 ?>
                             </div>
                         </div>
@@ -309,23 +328,25 @@ include "script.php";
 
                                                             document.getElementById("IntervalForm").submit();
                                                             return;
-                                                        } 
+                                                        }
                                                         // else {
-                                                            // <?php
+                                                        // <?php
                                                             // if (isset($_POST["Min"])) {
-                                                                // $_POST["Min"] = $MatrixNo;
+                                                            // $_POST["Min"] = $MatrixNo;
                                                             // }
                                                             // echo isset($_POST["Max"]);
                                                             // if (isset($_POST["Max"])) {
-                                                                // $_POST["Max"] = ($MatrixNo + $Interval > $num) ? $num : $MatrixNo + $Interval;
+                                                            // $_POST["Max"] = ($MatrixNo + $Interval > $num) ? $num : $MatrixNo + $Interval;
                                                             // }
-                                                            // ?>
-                                                            // document.getElementById('Min').value = "<?php echo $MatrixNo ?>";
-                                                            // document.getElementById('Max').value = "<?php echo ($MatrixNo + $Interval > $num) ? $num : ($MatrixNo + $Interval)
-                                                                                                    // ?>";
-// 
-                                                            // document.getElementById("IntervalForm").submit();
-                                                            // return;
+                                                            // 
+                                                            ?>
+                                                        // document.getElementById('Min').value = "<?php echo $MatrixNo ?>";
+                                                        // document.getElementById('Max').value = "<?php echo ($MatrixNo + $Interval > $num) ? $num : ($MatrixNo + $Interval)
+                                                                                                    // 
+                                                                                                    ?>";
+                                                        // 
+                                                        // document.getElementById("IntervalForm").submit();
+                                                        // return;
                                                         // }
                                                     }
                                                 </script>
@@ -432,11 +453,11 @@ include "script.php";
                         <script>
                             // console.log("What is this?");
                             /* For Drawing (canvas) Tool */
-                            var Poset = document.getElementById("poset-Draw");
-                            var poset = Poset.getContext("2d"),
-                                width = (Poset.width = (morder + 1) * x),
-                                height = (Poset.height = (morder + 1) * x);
-                            Poset.className = "border-0";
+                            var PosetId = document.getElementById("poset-Draw"),
+                                poset = PosetId.getContext("2d"),
+                                width = (PosetId.width = (morder + 1) * x),
+                                height = (PosetId.height = (morder + 1) * x);
+                            PosetId.className = "border-0";
                             poset.rect(x - 12, x - 12, width - x * 1.5, height - x * 1.5);
                             poset.clip();
                             reDraw();
@@ -444,8 +465,13 @@ include "script.php";
                     <?php
                         // return;
                     } else {
+
+                        /**
+                         * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                         * Searching (canvas) Drawing-Tool
+                         * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                         */
                     ?>
-                        <!-- For Searching (canvas) Tool -->
                         <a href='#' data-bs-toggle="modal" data-bs-target="#PosetMatrix-<?php echo $Matrix; ?>"><img title='Poset-Matrix' src='<?php echo $dir = "./Database/hasseDiagrams/allposets5_4_3.gif"; ?>' alt='Poset-Matrix Figure Goes Here.' width='150'></a>
                         <!-- <div class="text-center" data-bs-content="Draw The Hasse Diagram of The Poset Matrix.">
                             <canvas id="poset-<?= $Matrix; ?>" width="200" height="200" class="border border-4 border-dark shadow-lg p-0">
