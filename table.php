@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./styles/css/bootstrap.min.css"> <!-- 5.2.2 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="./styles/css/addCss/style.css"> <!-- Custom Css Styles -->
-    <link rel="shortcut icon" href="./styles/assets/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./styles/assets/images/PD-logo.png" type="image/x-icon">
     <title>Poset-Matrices || Order Matrix</title>
 </head>
 
@@ -19,7 +19,8 @@
     <!-- Styles Every HTML markups if possible. -->
     <header class="header-section">
         <!-- This is Header Part of the page  -->
-        <?php include "menu.php"; ?>
+        <?php include "menu.php";
+        if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) { ?>
     </header>
     <!-- This is content part of the page  -->
     <main class="content-wrapper py-3">
@@ -66,22 +67,26 @@
                             <?php } ?>
                         </tbody>
                     </table>
-            <?php } else {
+        <?php } else {
                     echo "<span class='success-null'>No Matrix of Order $order Found in '$tableName'.</span>";
                 }
             }
 
             mysqli_close($conn);
-            ?>
+        } else {
+            header("location: ./index.php");
+        }
+        ?>
         </section>
-        <script>
-            /**
-             *  Customized Basic Scripts [If Needed]
-             */
-            $("[data-bs-toggle='tooltip']").tooltip();
-            const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle='tooltip']");
-            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-        </script>
+    </main>
+    <script>
+        /**
+         *  Customized Basic Scripts [If Needed]
+         */
+        $("[data-bs-toggle='tooltip']").tooltip();
+        const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle='tooltip']");
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
 </body>
 
 </html>

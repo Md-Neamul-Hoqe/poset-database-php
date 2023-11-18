@@ -11,8 +11,8 @@
      <link rel="stylesheet" href="./styles/css/bootstrap.min.css"> <!-- 5.2.2 -->
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
      <link rel="stylesheet" type="text/css" href="./styles/css/addCss/style.css"> <!-- Custom Css Styles -->
-     <link rel="shortcut icon" href="./styles/assets/images/favicon.ico" type="image/x-icon">
-     <title>Sorry! Not Fount</title>
+     <link rel="shortcut icon" href="./styles/assets/images/PD-logo-watermark@3x.png" type="image/x-icon">
+     <title>Oops! Somthing went wrong</title>
 </head>
 
 <body>
@@ -22,29 +22,17 @@
           <?php include "menu.php"; ?>
      </header>
      <!-- This is content part of the page  -->
-     <main class="content-wrapper py-3 text-center">
-          <h2 class="fs-1 fw-bolder text-bg-info">Sorry! Page Is Not Found</h2>
-          <h4>You Can Try These: </h4>
-          <p>Check Your Database Connection.</p>
-          <p>Check Your Internet Connection</p>
-          <p>Check Your Firewall or Antivirous</p>
-          <p>If Not Fixed After All Those Method Applied. Please Reload Or Try Later.</p>
-          <p>Go To <a href="./index.php"> Home Page </a></p>
+     <main class="content-wrapper py-5 w-50 mx-auto mt-5">
+          <img src="./styles/assets/images/PD-logo@3x.png" alt="Poset Database Logo" class="mb-4 d-block mx-auto" width="150">
+          <h4 class="fw-bolder">We apologize for the inconvenience. We are working to fix the issue.</h4>
+          <h5 class="fw-bold mt-4">In the meantime, you can try: </h5>
+          <ul class="">
+               <!-- <li class="text-dark fst-normal lh-sm">Check Your Database Connection.</li> -->
+               <li class="py-1 text-dark fst-italic lh-sm">Going To the <a href="./index.php" class="text-decoration-none text-bg-dark text-light px-2 py-2 rounded-1 text-nowrap"> Home Page </a></li>
+               <li class="py-1 text-dark fst-italic lh-sm">Check Your Internet Connection.</li>
+               <li class="py-1 text-dark fst-italic lh-sm">Check Your Firewall or Antivirus.</li>
+               <li class="py-1 text-dark fst-italic lh-sm">Reload the page.</li>
+          </ul>
+          <p class="lh-lg fs-6">If the problem persists after trying all of these methods, please inform us by sending an email to <a href="mailto:salahuddin-mat@sust.edu" class="text-decoration-none text-bg-dark text-light px-2 py-2 rounded-1 text-nowrap">our email address</a> and try again later</p>
      </main>
-     <footer class="big-footer">
-          <!-- This is footer part of the page  -->
-     </footer>
-     <div class="copyright">
-          <!-- This is copy right part of the page  -->
-     </div>
-     <script>
-          /**
-           *  Customized Basic Scripts [If Needed]
-           */
-     </script>
-
-     <script src="./styles/js/bootstrap.bundle.min.js"></script>
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-</body>
-
-</html>
+     <?php include "footer.php" ?>

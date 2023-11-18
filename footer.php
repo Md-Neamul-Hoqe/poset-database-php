@@ -1,6 +1,6 @@
 <div class="copyright py-2 border-2 border-top">
     <!-- This is copy right part of the page  -->
-    Copyright <span>&copy; 2022-2023</span> by <a href="https://www.sust.edu/d/mat/faculty-profile-detail/141/" class="text-decoration-none text-dark fst-italic">Dr Mohammad Salah Uddin, Assistant Prof. Dept. of Mathematics, <abbr data-bs-toggle='tooltip' title="Shahjalal University of Science & Technology, Sylhet - 3114, Bangladesh.">SUST</abbr></a>. All Rights Reserved.
+    Copyright <span>&copy; 2022-2023</span> by <a href="https://www.sust.edu/d/mat/faculty-profile-detail/141/" class="text-decoration-none text-dark fst-italic"><strong>Dr Mohammad Salah Uddin</strong>, Assistant Prof. Dept. of Mathematics, <abbr data-bs-toggle='tooltip' title="Shahjalal University of Science & Technology, Sylhet - 3114, Bangladesh.">SUST</abbr></a>. All Rights Reserved.
 </div>
 
 <!-- JQuery.js -->
@@ -13,6 +13,7 @@
 
 <!-- Custom Script.js -->
 <script src="./styles/js/addJs/script.js"></script>
+<?php mysqli_close($conn) ?>
 </body>
 
 </html>

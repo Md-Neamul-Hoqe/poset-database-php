@@ -1,55 +1,35 @@
 <script>
+    console.clear();
     /* Set 5 as Initial Value on page load (index.php) */
     /**
      * 
      * @@@@@@@@@@@@@@@@@ DRAWING TOOL [By Mouse] @@@@@@@@@@@@@@@@@@
      * 
      */
-    // gridsInit();
-    // function gridsInit() {
-    /* Set The Name as Coordinate value of the grids */
     for (let i = 0; i < morder; i++) {
-        XYPoints[i] = []; // To increase The Dimension by 1
-        // for (let j = morder - 1; j >= 0; j--) {
+        XYPoints[i] = [];
+
         for (let j = 0; j < morder; j++) {
-            XYPoints[i][j] = [];
-            /* The Points Located In Frame Like Mesh Gride */
-            XYPoints[i][j][0] = i + 1; // X Coordinate of Mouse Down Click [Vertical Coordinate]
-            XYPoints[i][j][1] = j + 1; // Y Coordinate of Mouse Down Click [Horizontal Coordinate]
-            XYPoints[i][j][2] = false; // isFilled The Point
+            XYPoints[i][j] = [i + 1, j + 1, false];
         }
     }
-    // }
 
     /* ============================================================  */
     /* ############################# GET THE MOUSE DOWN POSITION ################ */
     /* ============================================================  */
+
     function getMousePosition(canvas, event) {
-        // let rect = canvas.getBoundingClientRect(); // Boundary Coords of canvas
-        // no click = 0, right click = 2
-        if (event.keyCode !== undefined && event.key !== undefined) {
-            var mouseClick = event.keyCode || event.key || event.button;
-        } else {
-            var mouseClick = event.button;
-        }
-        // console.log(mouseClick);
-        // console.log(event.key);
-        if (mouseClick === 1) {
-            // left click only
-            let x = event.offsetX;
-            let y = event.offsetY;
-            return [x, y];
-        } else if (mouseClick === 0) {
-            /* For Hover / No Click*/
-            let x = event.offsetX;
-            let y = event.offsetY;
+        let x = event.offsetX;
+        let y = event.offsetY;
+        let mouseClick = event.button;
+        if (mouseClick === 1 || mouseClick === 0) {
             return [x, y];
         } else {
-            // console.log("Not-Clicked.");
             return [0, 0];
         }
-
     } /* Mouse Position for an event */
+
+    // the canvas is initialized
     if (typeof(poset) !== undefined) {
 
         /* For Hover Effect */
@@ -60,12 +40,13 @@
             let minDistance = Number.MAX_SAFE_INTEGER,
                 DistanceFromPointToLine = Number.MAX_SAFE_INTEGER,
                 DistanceFromXY1ToXY2 = Number.MAX_SAFE_INTEGER;
+
             /* X Coordinate of Clicked Position */
             let xCCo = Math.floor(xCurrent / 50);
 
             /* selected Elements below xCurrent */
             let count = 0;
-            selectedElements.forEach((element) => {
+            coveringMatrix.forEach((element) => {
                 if (element[0] <= xCCo) {
                     count++;
                 }
@@ -74,16 +55,16 @@
             /* Get Two Points From SelectedElements To Relate */
             for (let i = count - 1; i >= 0; i--) {
                 /* Set X1, Y1 as 1st point down xCurrent */
-                X1 = selectedElements[i][0] * x;
-                Y1 = selectedElements[i][1] * x;
+                X1 = coveringMatrix[i][0] * x;
+                Y1 = coveringMatrix[i][1] * x;
 
                 /* Find Suitable X2, Y2 for 2nd point in up-xCurrent */
                 for (let j = count; j < SELength; j++) {
-                    if (selectedElements[j][0] * x > X1) {
+                    if (coveringMatrix[j][0] * x > X1) {
 
                         /* take End point */
-                        X2 = selectedElements[j][0] * x;
-                        Y2 = selectedElements[j][1] * x;
+                        X2 = coveringMatrix[j][0] * x;
+                        Y2 = coveringMatrix[j][1] * x;
 
                         /* Disntance From Start to End */
                         DistanceFromXY1ToXY2 = Math.sqrt(
@@ -108,22 +89,11 @@
                             /* =========================================== */
 
                             var isCovered = (IsConnectable(i, j) === true) ? true : false;
-                            // console.log("Check! Can We Relate?", i, j, !isCovered);
 
-                            /* @@@@@@@@@@@@@@@@@@@@@@@ */
-                            /* Hover Effect */
-                            // isHovered = true;
-                            /* Start & End Directly Related Now? if Yes => No Hover Effect. */
-                            if (
-                                selectedElements[i][2] != undefined &&
-                                selectedElements[i][2] != null &&
-                                selectedElements[i][2].length
-                            ) {
-                                var foundEnd = selectedElements[i][2].findIndex(function(element) {
-                                    return element == j;
-                                });
+                            if (coveringMatrix[i][2]?.includes(j)) {
+                                var foundEnd = coveringMatrix[i][2].indexOf(j);
                             } else {
-                                foundEnd = -1;
+                                var foundEnd = -1;
                             }
 
                             if (isCovered || foundEnd !== -1) {
@@ -137,15 +107,13 @@
                                 /* Save The Indices of X1, Y1 and X2, Y2 to return to finally drawn */
                                 (Start = i), (End = j);
                             } // The Relation is Trivial
-                            /* Hover Effect END */
-                            /* @@@@@@@@@@@@@@@@@@@@@@@ */
 
                         } // Click near the connection line or on nearest points // check is minDistanced
                     } // Relate only in upword direction
                 } // For loop of j -> SELength Closed
             } // For loop of i -> 0 Closed
             return [Start, End];
-        } // LeastDistance()
+        } // LeastDistanceShow()
 
 
         /* ============================================================  */
@@ -156,12 +124,8 @@
             /* Find The Distance From The Mesh Points To The Clicked Point */
             [xCoord, yCoord, K] = findDistFromGrids(xCurrent, yCurrent);
             /* FILL IF NOT CHECKED UNFILLED IF CHECKED */
-            // if (typeof(poset) === undefined) {
-            //     console.log("Error! poset not defined.");
-            //     return;
-            // }
+
             if (DistanceFromGrids[K] <= radius + 1) {
-                // console.log("In DrawPoset() ", xCoord, yCoord);
                 /* Fill The Element As Selected Nodes */
                 fillOrUnFill(xCoord, yCoord);
             } else if (SELength > 1) {
@@ -173,7 +137,7 @@
                 if (Start != -1) {
                     // console.log("Connect The Points: ", Start, End);
                     let connected = -1; // Let They are not connected.
-                    /* Define array's new dimention for connectedness if not defined */
+                    /* Define array's new dimension for connectedness if not defined */
                     connectLine(Start, End);
                 }
             } else {
@@ -181,189 +145,281 @@
                 document.getElementById("ShowErrors").innerHTML =
                     "Please Select At Least Two Points Before To Connect.";
             }
-            /* Show the selectedElements with relations */
-            // let TL = selectedElements.length;
-            // if (selectedElements.length) {
-            //   console.table(selectedElements);
-            //   for (let i = 0; i < TL; i++) {
-            //     if (
-            //       selectedElements[i][2] != undefined &&
-            //       selectedElements[i][2] != null &&
-            //       selectedElements[i][2].length
-            //     ) {
-            //       let TLL = selectedElements[i][2].length;
-            //       // for(let j = 0; j<TLL; j++){
-            //   console.log("Cover of ", i);
-            //       console.table(selectedElements[i][2]);
-            //       // }
-            //     }
-            //   }
-            // }
         }
 
         /* ============================================================  */
-        /* Transitional Cover Matrix Formation  */
+        /* transitive-Closer property apply to the Matrix  */
         /* ============================================================  */
-        function transitionalCoverMatrix() {
-            SELength = selectedElements.length;
-            // console.log("Create Transitional Cover Matrix with length is: ", SELength);
+        function transitiveCloserMatrix() {
+            SELength = coveringMatrix.length;
             if (SELength) {
-                let CoverMatrixLength = (Math.pow(SELength, 2) - SELength) / 2; // Length of the posetMatrix [Upper Triangular]
-                // console.log(CoverMatrixLength);
+                /* Length of the Upper Triangular Poset */
+                let UTPosetSize = (Math.pow(SELength, 2) - SELength) / 2;
 
-                /* Transitional Cover Matrix */
-                const posetTCM = new Array(CoverMatrixLength).fill(0); // Initialize as 0
-                // let SEsC = selectedElements; // Two var useing same location & same value
-                // let SEsC = [];
-                /* to seperate vars location */
-                var SEsC = JSON.parse(JSON.stringify(selectedElements));
+                /* transitive Closer Upper Triangular Matrix */
+                UTPoset[0] = new Array(UTPosetSize).fill(0);
 
-                // console.log("selected Elements: "),
-                //     console.table(selectedElements);
+                /* to separate vars location in 2D Array copy */
+                var UTCoverM = JSON.parse(JSON.stringify(coveringMatrix));
 
-                // console.table(SEsC);
-
-                /* Transit Cover Matrix */
+                /* check for every elements covering elements */
                 for (let j = morder - 3; j >= 0; j--) {
-                    /* If The (j) element has no relation, Needn't check further */
-                    // var PTCM = SEsC[j][2].length;
+                    // console.log('for each ', j, 'th element.');
                     if (
-                        SEsC[j][2] != undefined &&
-                        SEsC[j][2] != null &&
-                        SEsC[j][2].length
+                        UTCoverM[j][2]?.[0] != undefined
                     ) {
-
-                        // console.log(SEsC),
-                        //     console.log('j = ', j);
-                        for (let k = j + 1; k < morder - 1; k++) {
-
-                            /* Is j -> k ? */
-                            let idxj = SEsC[j][2].findIndex(function(a) {
-                                // console.log("j = ", j, "\n"),
-                                // console.table(a, "?=", j + 1);
-                                return a === k;
-                            })
-
-                            /* If j related to k then */
-                            if (idxj !== -1) {
-                                // console.log('k = ', k),
-                                //     console.log(j, '->', k, " Found in idx = ", idxj);
-
-                                /* If Next element (k) has no relation, Needn't check further */
-                                if (
-                                    SEsC[k][2] != undefined &&
-                                    SEsC[k][2] != null &&
-                                    SEsC[k][2].length
-                                ) {
-                                    for (let l = k + 1; l < morder; l++) {
-
-                                        /* Is k -> l ? */
-                                        let idxk = SEsC[k][2].findIndex(function(b) {
-                                            // console.log("j+1 = ", j + 1, "\n");
-                                            // console.table(b, "?=", k + 1);
-                                            return b === l;
-                                        })
-
-                                        /* If k -> l then */
-                                        if (idxk !== -1) {
-                                            // console.log('l = ', l),
-                                            // console.log(k, '->', l, " Found in idx = ", idxk);
-                                            // console.log(j, " Update -> ", l);
-
-                                            /* Append to The Relations */
-
-                                            SEsC[j][2][SEsC[j][2].length] = l;
-
-                                            // console.log("Copy of Selected Element Matrix:"), console.table(SEsC);
-
-                                            // console.log("But Selected Element Matrix remain Unchanged:"),
-                                            //     console.table(selectedElements);
-                                        }
+                        UTCoverM[j][2].forEach(element => {
+                            // console.log(j);
+                            if (UTCoverM[element][2]?.[0] != undefined) {
+                                UTCoverM[element][2].forEach(element1 => {
+                                    if ((UTCoverM[j][2].findIndex(theElement => theElement === element1)) === -1) {
+                                        UTCoverM[j][2].push(element1);
+                                        UTCoverM[j][2].sort(Sorting2DArray);
                                     }
-
-                                    // console.log("Is =? ", SEsC[j][2].length, morder - j - 1);
-                                    /* If Already All Updated Then 'break' */
-                                    if (SEsC[j][2].length == morder - j - 1) {
-                                        // console.log(j, " is connected to "),
-                                        // console.table(SEsC[j][2]);
-                                        break;
-                                    }
-
-                                }
+                                });
                             }
-                        }
-                    } /* SEsC's j'th element has no cover matrix */
-                } /* END FOR loop :=> Transit Cover Matrix */
+                        });
+                    } /* UTCoverM's j'th element has no cover matrix */
+                } /* END FOR loop :=> Transitive Cover Matrix */
 
                 /* Find The Cover Matrix */
                 let relations = [];
-                for (let i = 0; i < SELength; i++) {
+                for (let n_th_element = 0; n_th_element < SELength; n_th_element++) {
                     if (
-                        SEsC[i][2] != undefined &&
-                        SEsC[i][2] != null &&
-                        SEsC[i][2].length
+                        UTCoverM[n_th_element][2]?.[0] != undefined
                     ) {
-                        let RL = SEsC[i][2].length;
-                        for (let k = 0; k < RL; k++) {
-                            let cover = SEsC[i][2][k];
-                            let idx = SELength * i + cover - ((i + 1) * (i + 2)) / 2; // Find the idx from relational values.
-                            posetTCM[idx] = 1; // If related assign 1
+                        let RL = UTCoverM[n_th_element][2].length;
+                        for (let n_th_relation = 0; n_th_relation < RL; n_th_relation++) {
+                            let cover = UTCoverM[n_th_element][2][n_th_relation];
+                            let idx = SELength * n_th_element + cover - ((n_th_element + 1) * (n_th_element + 2)) / 2; // Find the idx from relational values.
+                            UTPoset[0][idx] = 1; // If related assign 1
                         }
 
                         /* Save The Number of Covers Elements */
-                        relations[i] = selectedElements[i][2].length;
-                        // console.log("selected Element for ", i, "th value is: ");
-                        // console.table(selectedElements[i][2]);
-                        // console.log("So no. of relation: ", relations[i]);
+                        relations[n_th_element] = coveringMatrix[n_th_element][2].length;
 
                     } else {
                         /* If no relations exist then no. is 0 */
-                        relations[i] = 0;
-                        // console.log("selected Element for ", i, "th value is: ");
-                        // console.table(selectedElements[i][2]);
-                        // console.log("So no. of relation: ", relations[i]);
+                        relations[n_th_element] = 0;
+                    }
+                }
+                return UTPoset[0];
+            } /* IF END */
+        } /* createRelationalTable() END */
+
+        /* For isomorphicMatrices() */
+        function PRIndexGrouping(arr) {
+            if (arr.length === 0) {
+                return [
+                    []
+                ]; // return an array with the empty subset
+            }
+
+            let last = arr.pop(),
+                subsets = PRIndexGrouping(arr),
+                newSubsets = subsets.map(subset => [...subset, last]); // create new subsets by adding the last element to each subset
+
+            return [...subsets, ...newSubsets]; // combine the old and new subsets
+        }
+        /**
+         * Get The Poset Line 
+         * Make the Poset Matrix 
+         * Count The Height Of each i [Elements/nodes] 
+         * swap the rows & columns such that each i of same H remain together
+         * [Find the indices i for which A[i][i+1] == 0 & H of i & i+1 are same]
+         * Find The Power set of same H of i's & The Permutation of the Power set 
+         *   */
+        /* find the matrices which isomorphic to the given matrix 'coveringMatrix' */
+        function isomorphicMatrices() {
+            // console.table(XYPoints), console.table(coveringMatrix);
+            /* Length of the poset line */
+            let nPosetLines = UTPoset.length,
+                indices = [],
+                p = 0,
+                index = 0;
+
+            /* Poset Line To Poset Matrix */
+            for (let i = 0; i < morder; i++) {
+                POSet[i] = [];
+                for (let j = 0; j < morder; j++) {
+                    POSet[i][j] = (i === j || (j > i && UTPoset[nPosetLines - 1][index++] === 1)) ? 1 : 0;
+                }
+            }
+
+            // console.log('The POSet was :')
+            // console.table(POSet);
+
+            /* Height of The Nodes [initial Height is 1] */
+            let H = new Array(morder).fill(1);
+            // let W = new Array(morder).fill(1);
+
+            /* iterate over all columns/rows */
+            for (let i = 1; i < morder; i++) {
+
+                /* find the location of 1 which is before of diagonal 1 */
+                column = POSet.map(e => e[i]);
+                let hidx = column.lastIndexOf(1, i - 1);
+
+                /* Count Height */
+                if (hidx !== -1) {
+                    H[i] = H[hidx] + 1;
+                }
+
+                // let widx = POSet[i].indexOf(1, i + 1);
+                /* Count Width */
+                // if (widx !== -1) {
+                //     W[i] = W[widx] + 1;
+                // }
+            } // END for loop | Height of Nodes
+
+            console.log(`H = [${H.join(', ')}]`);
+
+            /* Height of the poset */
+            Height = Math.max(...H);
+
+            /* Sort H & swap Poset matrix as Sorted H */
+            /* Create a new array of objects that include both the original values and their indices */
+            const HWithIndex = H.map((value, index) => ({
+                value,
+                index
+            }));
+
+            // Sort the new array of objects based on the values
+            HWithIndex.sort((a, b) => {
+                if (a.value < b.value) {
+
+                    /* Swap The (a.index)th row & column with (b.index) */
+
+                    /* swap rows */
+                    // console.log('Swap index a: ', a.index);
+                    // console.log('with index b: ', b.index);
+                    [POSet[a.index], POSet[b.index]] = [POSet[b.index], POSet[a.index]];
+
+                    /* swap columns */
+                    POSet.slice(a.index, b.index+1).forEach(row => {
+                        [row[a.index], row[b.index]] = [row[b.index], row[a.index]];
+
+                    });
+
+                    return -1; /* swap a & b */
+                } else {
+                    return a.value - b.value; /* don't swap */
+                }
+            });
+
+            // console.log('Now The Poset is: ')
+            console.table(POSet)
+
+            // Log the original array sorted based on the values
+            H = HWithIndex.map(item => item.value);
+            // console.log(`H = [${H.join(', ')}]`); // print the final values of H
+            // H.sort(sortHeight);
+
+            /* Find swapable indices  */
+            for (let i = 0; i < morder - 1; i++) {
+                let swapable = false;
+
+                /* Find the indices i for which A[i][i+1] == 0 & H of (i & i+1) are same */
+                if (POSet[i][i + 1] === 0 && H[i] === H[i + 1]) {
+                    console.log('Swapable Row is: ', i)
+                    swapable = true;
+                }
+
+                if (swapable) {
+                    /* save the index which is swapable with the nPosetLines index */
+                    indices[p++] = i;
+                }
+            } // END finding swapable indices | for Loop
+
+            /* Find all Possible Relabel Index Group */
+            const PRIndices = PRIndexGrouping(indices);
+            PRIndices.shift(); /* delete first element which is [] | null */
+
+            console.log('The indices are: ')
+            console.table(PRIndices);
+
+            // Relabel the poset for every set of indices
+            PRIndices.forEach(indexSet => {
+                /* Copy Poset Matrix to swapM for relabeling again */
+                let swapM = JSON.parse(JSON.stringify(POSet));
+
+                /* Relabeling Poset */
+                indexSet.forEach(index => {
+                    // console.log('The index is ', index)
+                    /* swap rows */
+                    [swapM[index], swapM[index + 1]] = [swapM[index + 1], swapM[index]];
+                    // console.table(swapM[index]);
+                    /* swap columns */
+                    swapM.slice(index, index+2).forEach(row => {
+                        [row[index], row[index + 1]] = [row[index + 1], row[index]];
+                        // console.table(row[index]);
+                    });
+                });
+
+                /* Poset Matrix to Poset line */
+                let q = 0,
+                    matrix = [];
+                for (let i = 0; i < morder; i++) {
+                    for (let j = i + 1; j < morder; j++) {
+                        matrix[q++] = swapM[i][j];
                     }
                 }
 
+                // check the relabeled matrix already exist in UTPoset? 
+                let isPoset = true,
+                    newPoset = JSON.stringify(matrix); // stingify to compare the matrices 
 
-                // return [posetTCM, selectedElements];
-                // document.getElementById("outputMatrix").innerHTML = "<?php // $_SESSION['SEs'] = '" + selectedElements + "';
-                                                                        // $_SESSION['SEs_rels'] = '" + relations + "'; 
-                                                                        ?>";
-                // console.log("Relations: "),
-                // console.table(relations),
-                // console.log("Session OutPut: ");
-                // console.table(document.getElementById("outputMatrix").innerHTML);
-                // console.log("<?php // print_r($_SESSION["SEs"]); 
-                                ?>");
+                for (let i = 0; i < nPosetLines; i++) {
+                    if (JSON.stringify(UTPoset[i]) === newPoset) {
+                        isPoset = false;
+                        break; // exit the for loop when the condition is met
+                    }
+                }
 
-                // console.log("selected Elements: ");
+                /* Check all lower triangular entries are zero */
+                for (let i = 0; i < morder - 1; i++) {
+                    for (let j = 1; j > i && j < morder; j++) {
+                        if (swapM[j][i] !== 0) {
+                            isPoset = false;
+                            console.log('NOT Poset or New Poset is:')
+                            console.table(swapM)
+                            console.log('How is it possible?')
+                            break;
+                        }
+                    }
 
+                    if (!isPoset) {
+                        break;
+                    }
+                }
 
-                // console.log("Transitional Cover Matrix Created as:"),
-                // console.table(posetTCM);
+                if (isPoset) {
+                    /* save the unique isomorphic posets */
+                    UTPoset[nPosetLines++] = matrix;
+                    console.log('New Isomorphic Poset of the above poset line: '),
+                        console.table(swapM);
+                }
 
-                /* To draw in index.php page */
-                return posetTCM;
-            } /* IF END */
-            // else {
-            // console.log("Please Select Atleast One Elements.");
-            //     // return 0;
-            // }
-        } /* createRelationalTable() END */
+            }); // End Relabeling -> PRIndices.forEach(indexSet
+            UTPoset.sort();
+            return UTPoset;
+        }
 
         /* Delete All Elements And There Relations & Update 'XYPoints' Matrix */
         function resetCanvas() {
+            // reset = true;
             document.getElementById("ShowErrors").hidden = true;
             // console.log("@@@@@@@@@@@@@@@@@\nClearing The Canvas...\n@@@@@@@@@@@@@@");
-
-            while (L = selectedElements.length) { // selectedElements.length dicrease to 0 as deletion
+            // XYPoints = [], coveringMatrix = [];
+            while (L = coveringMatrix.length) { // coveringMatrix.length dicrease to 0 as deletion
                 // console.log("SEs Length in resetCanvas(): ", L);
-                // console.log("Deleted Element is: ", selectedElements[0][0] * x, selectedElements[0][1] * x);
+                // console.log("Deleted Element is: ", coveringMatrix[0][0] * x, coveringMatrix[0][1] * x);
 
                 /* All Selected Elements Sorted The Re arrange From 0 index */
-                DrawPoset(selectedElements[0][0] * x, selectedElements[0][1] * x);
+                DrawPoset(coveringMatrix[0][0] * x, coveringMatrix[0][1] * x);
             }
+            reDraw();
+            // reset = false;
         } /* resetCanvas() END */
 
 
@@ -383,7 +439,7 @@
 
             /* Keyboard Event */
             document.onkeyup = function(e) {
-                /* for keyborad, e.which is deprecated */
+                /* for keyboard, e.which is deprecated */
                 /* Is Shift key pressed */
                 let Shift = e.shiftKey;
                 // Alt = e.altKey;
@@ -440,7 +496,7 @@
 
                             if (PStart === -1 || PEnd !== -1) {
                                 /* PStart was unset (For First Time) Or PEnd was Set (For Next Time, To Reset PStart) */
-                                let StartTmp = selectedElements.findIndex(Select);
+                                let StartTmp = coveringMatrix.findIndex(Select);
                                 // console.log(StartTmp);
                                 if (StartTmp !== -1) {
                                     // console.log("Start = ", StartTmp, " is set.");
@@ -449,7 +505,7 @@
                             } else {
 
                                 /* PStart is set && PEnd is unset */
-                                let StartTmp = selectedElements.findIndex(Select);
+                                let StartTmp = coveringMatrix.findIndex(Select);
                                 if (StartTmp !== -1 && StartTmp !== PStart) {
                                     // console.log("End = ", StartTmp, " is set.");
                                     PEnd = StartTmp;
@@ -527,9 +583,9 @@
                         poset.stroke();
                 }
             }
-            // Initialising The Coords by small circles with radius = "$radius"
+            // Initializing The Coords by small circles with radius = "$radius"
         }
-        /* Initialise the canvas frame with the grids */
+        /* Initialize the canvas frame with the grids */
 
         // PosetInitial();
         function PosetInitial() {
@@ -561,97 +617,239 @@
         /* ============================================================ */
         /* reDraw canvas with all drawn elements & their covers */
         /* ============================================================ */
-        // console.table(selectedElements);
+        // console.table(coveringMatrix);
         // reDraw();
 
         function reDraw() {
             /* Clear The Canvas */
             poset.clearRect(0, 0, width, height);
-            // console.log(
-            //     "=====================\nThe canvas Cleared.\n====================="
-            // );
 
             /* Re-Draw The Canvas Initially */
             PosetInitial();
 
             <?php
             if (!isset($_GET["matrix"]) || !isset($_GET["SEs"])) {
-            ?>
-                // console.log("Draw The Grids");
-                gridsDraw()
-            <?php
+                echo "gridsDraw()";
             } else {
-            ?>
-                console.clear;
-                // console.log("Grids Not Drawn.");
-            <?php
+                echo "console.clear";
             }
             ?>
-            // console.log("The grid circles Restored by PosetInitial()."),
-            //   console.log("ReDrawing...", "\nThe selected Elements to be reDrawn.");
-
+            // /* ====================================================== */
+            // XYPoints = [
+            //     [
+            //         [
+            //             1,
+            //             1,
+            //             false
+            //         ],
+            //         [
+            //             1,
+            //             2,
+            //             true
+            //         ],
+            //         [
+            //             1,
+            //             3,
+            //             false
+            //         ],
+            //         [
+            //             1,
+            //             4,
+            //             false
+            //         ],
+            //         [
+            //             1,
+            //             5,
+            //             false
+            //         ]
+            //     ],
+            //     [
+            //         [
+            //             2,
+            //             1,
+            //             false
+            //         ],
+            //         [
+            //             2,
+            //             2,
+            //             false
+            //         ],
+            //         [
+            //             2,
+            //             3,
+            //             false
+            //         ],
+            //         [
+            //             2,
+            //             4,
+            //             false
+            //         ],
+            //         [
+            //             2,
+            //             5,
+            //             false
+            //         ]
+            //     ],
+            //     [
+            //         [
+            //             3,
+            //             1,
+            //             false
+            //         ],
+            //         [
+            //             3,
+            //             2,
+            //             true
+            //         ],
+            //         [
+            //             3,
+            //             3,
+            //             false
+            //         ],
+            //         [
+            //             3,
+            //             4,
+            //             true
+            //         ],
+            //         [
+            //             3,
+            //             5,
+            //             false
+            //         ]
+            //     ],
+            //     [
+            //         [
+            //             4,
+            //             1,
+            //             false
+            //         ],
+            //         [
+            //             4,
+            //             2,
+            //             false
+            //         ],
+            //         [
+            //             4,
+            //             3,
+            //             false
+            //         ],
+            //         [
+            //             4,
+            //             4,
+            //             false
+            //         ],
+            //         [
+            //             4,
+            //             5,
+            //             false
+            //         ]
+            //     ],
+            //     [
+            //         [
+            //             5,
+            //             1,
+            //             false
+            //         ],
+            //         [
+            //             5,
+            //             2,
+            //             true
+            //         ],
+            //         [
+            //             5,
+            //             3,
+            //             false
+            //         ],
+            //         [
+            //             5,
+            //             4,
+            //             true
+            //         ],
+            //         [
+            //             5,
+            //             5,
+            //             false
+            //         ]
+            //     ]
+            // ];
+            // coveringMatrix = [
+            //     [
+            //         1,
+            //         2,
+            //         [
+            //             1
+            //         ]
+            //     ],
+            //     [
+            //         3,
+            //         2,
+            //         [
+            //             3,
+            //             4
+            //         ]
+            //     ],
+            //     [
+            //         3,
+            //         4,
+            //         [
+            //             3,
+            //             4
+            //         ]
+            //     ],
+            //     [
+            //         5,
+            //         2
+            //     ],
+            //     [
+            //         5,
+            //         4
+            //     ]
+            // ], SELength = coveringMatrix.length;
+            // /* ====================================================== */
             if (
-                selectedElements != undefined &&
-                selectedElements != null &&
-                selectedElements.length
+                coveringMatrix?.[0] != undefined
             ) {
                 /* Re-Draw The Selected Elements & Relations */
-                // console.table(selectedElements[0][0]);
                 for (let i = 0; i < SELength; i++) {
                     /* Fill The Points */
                     poset.beginPath(),
                         poset.arc(
-                            selectedElements[i][0] * x,
-                            selectedElements[i][1] * x,
+                            coveringMatrix[i][0] * x,
+                            coveringMatrix[i][1] * x,
                             radius,
                             0,
                             2 * Math.PI
                         ),
                         poset.fill();
-                    // console.log("The point ", i, " is restored.");
 
                     /* Re-Draw The Covers of i if Exist */
                     if (
-                        selectedElements[i][2] != undefined &&
-                        selectedElements[i][2] != null &&
-                        selectedElements[i][2].length
+                        coveringMatrix[i][2]?.[0] != undefined
                     ) {
-                        // console.log("=================\nThe Covers of", i, "are "),
-                        //   console.table(selectedElements[i][2]);
                         /* If Any Relation Found To 'i' get Length of the Relation List */
-                        var jL = selectedElements[i][2].length; // Use var to avoid undefined error of jL outside the block
+                        var jL = coveringMatrix[i][2].length;
 
                         for (let j = 0; j < jL; j++) {
                             poset.beginPath(),
                                 poset.moveTo(
-                                    selectedElements[i][0] * x,
-                                    selectedElements[i][1] * x
+                                    coveringMatrix[i][0] * x,
+                                    coveringMatrix[i][1] * x
                                 );
                             poset.lineTo(
-                                selectedElements[selectedElements[i][2][j]][0] * x,
-                                selectedElements[selectedElements[i][2][j]][1] * x
+                                coveringMatrix[coveringMatrix[i][2][j]][0] * x,
+                                coveringMatrix[coveringMatrix[i][2][j]][1] * x
                             );
-                            // console.log(i, "is covered by ", selectedElements[i][2][j]);
+
                             poset.stroke();
                             // console.log("The Relation is restored.");
                         } /* Covers of i Re-Drawn */
-                    } else {
-                        // console.log("No Cover is Found For ", i);
-                    }
-                } // Re-stored All
-                // console.log(
-                //     "=====================\nRestored Everything.\n====================="
-                // );
+                    } /*  No Cover is Found For i */
+                } /* Re-stored All */
             }
-            // else {
-            //     console.log(
-            //         "=====================\n=====================\nNothing To Resotred. All Elements With Their Relations/Covers Removed."
-            //     );
-            // }
         } // reDraw()
 
         /* ============================================================ */
-        /* Find Indices of Least Distanced (< radius) of two Nearest (minDistance) Points from "selectedElements" matrix */
+        /* Find Indices of Least Distanced (< radius) of two Nearest (minDistance) Points from "coveringMatrix" matrix */
         /* ============================================================ */
         function LeastDistance(xCurrent, yCurrent) {
             let Start = -1,
@@ -663,7 +861,7 @@
             /* X Coordinate of Clicked Position */
             let xCCo = Math.floor(xCurrent / 50);
             let count = 0; // selected Elements below xCurrent
-            selectedElements.forEach((element) => {
+            coveringMatrix.forEach((element) => {
                 if (element[0] <= xCCo) {
                     count++;
                 }
@@ -671,16 +869,16 @@
             /* Get Two Points To Relate */
             for (let i = count - 1; i >= 0; i--) {
                 /* Set X1, Y1 as 1st point down xCurrent */
-                X1 = selectedElements[i][0] * x;
-                Y1 = selectedElements[i][1] * x;
+                X1 = coveringMatrix[i][0] * x;
+                Y1 = coveringMatrix[i][1] * x;
 
                 /* Find Suitable X2, Y2 for 2nd point in up xCurrent */
                 for (let j = count; j < SELength; j++) {
-                    if (selectedElements[j][0] * x > X1) {
+                    if (coveringMatrix[j][0] * x > X1) {
 
                         /* take End point */
-                        X2 = selectedElements[j][0] * x;
-                        Y2 = selectedElements[j][1] * x;
+                        X2 = coveringMatrix[j][0] * x;
+                        Y2 = coveringMatrix[j][1] * x;
 
                         /* Disntance From Start to End */
                         DistanceFromXY1ToXY2 = Math.sqrt(
@@ -727,8 +925,8 @@
                                 /* Save The Indices of X1, Y1 and X2, Y2 to return to finally drawn */
                                 (Start = i), (End = j);
                                 // console.log("Start =", Start, " End = ", End);
-                                // console.table(selectedElements);
-                                // console.table(selectedElements[0][2]);
+                                // console.table(coveringMatrix);
+                                // console.table(coveringMatrix[0][2]);
                             } // The Relation is Trivial
                             /* Making Relation END */
                             /* @@@@@@@@@@@@@@@@@@@@@@@ */
@@ -760,10 +958,10 @@
                     poset.save();
                     poset.beginPath(); /* Use beginPath() to prevent connection from previous path */
                     poset.moveTo(
-                        selectedElements[Start][0] * x,
-                        selectedElements[Start][1] * x
+                        coveringMatrix[Start][0] * x,
+                        coveringMatrix[Start][1] * x
                     );
-                    poset.lineTo(selectedElements[End][0] * x, selectedElements[End][1] * x);
+                    poset.lineTo(coveringMatrix[End][0] * x, coveringMatrix[End][1] * x);
                     poset.setLineDash([3, 3]);
                     poset.stroke();
                     poset.restore();
@@ -780,6 +978,52 @@
             (PStart = Start), (PEnd = End);
         } // ShowConnection(xCurrent, yCurrent) END
 
+        /* 1D or 2D array Sorter */
+        function Sorting2DArray(a, b) {
+
+            // 2D array Sorter in 3D array
+            if (a?.[0] != undefined && b?.[0] != undefined) {
+
+                // 2D array Sorter [a, b are two 1D array]
+                if (a[0] === b[0]) {
+
+                    /* If in same Height sort ascending by Width */
+                    // console.log("Sorting");
+                    return a[1] - b[1];
+
+                } else {
+
+                    return a[0] - b[0];
+
+                }
+
+            } else {
+                // 1D array Sorter [a, b are two elements]
+                return a - b;
+            }
+        }
+
+        // function Sorting2DArray(a, b) {
+        //     if (a[2]?.[0] != undefined && b[2]?.[0] != undefined) {
+        //         // 1D array in 3D array 
+        //         a[2].sort(Sorting2DArray);
+        //         b[2].sort(Sorting2DArray);
+        //     }
+
+        //     if (a?.[0] != undefined && b?.[0] != undefined) {
+        //         // 2D array Sorter in 3D array
+        //         if (a[0] === b[0]) {
+        //             /* If in same Height sort accending by Width */
+        //             console.log("Sorting");
+        //             return a[1] - b[1];
+        //         } else {
+        //             return a[0] - b[0];
+        //         }
+        //     } else {
+        //         // 1D array Sorter in 2D array
+        //         return a - b;
+        //     }
+        // }
 
         /* ============================================================  */
         /* Fill The Clicked Unfilled Gride Point Or Unfill Clicked Filled Gride Point  */
@@ -804,20 +1048,20 @@
                 /* Now Draw The Node as Filled */
                 poset.beginPath(), poset.arc(X, Y, radius, 0, 2 * Math.PI), poset.fill();
 
-                /* Selected Nodes Save to 'selectedElements[]' */
-                selectedElements[SELength++] = [
+                /* Selected Nodes Save to 'coveringMatrix[]' */
+                coveringMatrix[SELength++] = [
                     XYPoints[xCoord][yCoord][0],
                     XYPoints[xCoord][yCoord][1],
                 ];
                 // console.log("The filled point is ");
-                // console.table(selectedElements[SELength - 1]);
+                // console.table(coveringMatrix[SELength - 1]);
                 XYPoints[xCoord][yCoord][2] = true; /* Fill Successfull */
                 var U = 1; /* 1 element will be added in p Position */
                 // Total Number of Filled Nodes
-                /* Ufill/Remove The node From selectedElements array if already filled */
+                /* Ufill/Remove The node From coveringMatrix array if already filled */
             } else if (XYPoints[xCoord][yCoord][2] == true) {
                 /* Find The Index Of The Point on Selectedelements */
-                var p = selectedElements.findIndex(FindI_SE);
+                var p = coveringMatrix.findIndex(FindI_SE);
                 /* Remove All Relations From or To This Point */
                 U = -1; // Delete 1 Element
                 /* Update The Covers According To p & U if there exist any relation to update */
@@ -825,22 +1069,22 @@
                     /* Update The Relations in selected Elements According To (p, U) */
                     UpdateRelations(p, U);
                     // console.log("All Relations are Updated. Now Remove", p, "From:"),
-                    //   console.table(selectedElements);
+                    //   console.table(coveringMatrix);
                 }
                 /* Now Remove P Element & All Relations From it */
-                // console.table(selectedElements[p]);
+                // console.table(coveringMatrix[p]);
                 // if (
-                //   selectedElements[p][2] != undefined &&
-                //   selectedElements[p][2] != null &&
-                //   selectedElements[p][2].length
+                //   coveringMatrix[p][2] != undefined &&
+                //   coveringMatrix[p][2] != null &&
+                //   coveringMatrix[p][2].length
                 // ) {
-                //   console.log("with the relations "), console.table(selectedElements[p][2]);
+                //   console.log("with the relations "), console.table(coveringMatrix[p][2]);
                 // }
 
-                selectedElements.splice(p--, 1);
+                coveringMatrix.splice(p--, 1);
                 SELength--;
                 XYPoints[xCoord][yCoord][2] = false; /* Unfill Successfull */
-                // console.log("Now Redrawn Poset is:"), console.table(selectedElements);
+                // console.log("Now Redrawn Poset is:"), console.table(coveringMatrix);
                 reDraw();
             } else {
                 /* If More than morder is selected */
@@ -848,23 +1092,12 @@
                 document.getElementById("ShowErrors").innerHTML = morder + " Elements are already selected.";
                 return
             }
-            // console.table("XYPoints: ", XYPoints[xCoord][yCoord]);
 
             /* Sort The Filled Nodes Array */
-            /* ================================================== */
-            function Sorting2DArray(a, b) {
-                if (a[0] == b[0]) {
-                    /* If in same Height sort accending by Width */
-                    // console.log("Sorting");
-                    return a[1] - b[1];
-                } else {
-                    return a[0] - b[0];
-                }
-            }
-            selectedElements.sort(Sorting2DArray); // Again sort about second element if 1st are same
-            // console.table(selectedElements);
+            coveringMatrix.sort(Sorting2DArray);
+            // console.table(coveringMatrix);
 
-            let P = selectedElements.findIndex(FindI_SE);
+            let P = coveringMatrix.findIndex(FindI_SE);
             if (SELength > 2 && P > -1) {
                 /* Update The Relations in selected Elements According To (p, U) */
                 // console.log("Updating Relations For", P);
@@ -873,7 +1106,7 @@
 
             /* Copy Nodes To a new array for showConnection() to get hover effect */
             // let Copy_nodes_i = 0;
-            // selectedElements.forEach((element) => {
+            // coveringMatrix.forEach((element) => {
             //     // get only filled elements without connections
             //     HEs[Copy_nodes_i] = [];
             //     HEs[Copy_nodes_i][0] = element[0];
@@ -884,35 +1117,35 @@
 
         /** 
          * ===========================================================
-         * Connect Two Selected Points (Start (<) End, are selectedElements's index)
+         * Connect Two Selected Points (Start (<) End, are coveringMatrix's index)
          * ===========================================================
          */
         function connectLine(Start, End) {
             if (
-                selectedElements[Start][2] != undefined &&
-                selectedElements[Start][2] != null
+                coveringMatrix[Start][2]?.[0] != undefined
             ) {
                 /* Check They are already connected (return Index) or Not (return -1). */
                 /* Find The Index Of the element to remove */
-                let k = selectedElements[Start][2].findIndex(function(arr) {
-                    return arr == End;
+                let k = coveringMatrix[Start][2].findIndex(function(H) {
+                    return H == End;
                 });
                 if (k != -1) {
                     /* If They already Connected Then Remove The Connection. */
-                    selectedElements[Start][2].splice(k--, 1);
+                    coveringMatrix[Start][2].splice(k--, 1);
                 } else {
                     /* If New Connection (k = -1) Then Push To The Array Start.e. connect them. */
-                    selectedElements[Start][2].push(End);
+                    coveringMatrix[Start][2].push(End);
                     connected = 1;
                 }
             } else {
-                selectedElements[Start][2] = [End];
+                coveringMatrix[Start][2] = [End];
                 connected = 1; /* Start & End Already Connected */
             }
             /* Sort The Covering Elements for convenience searching on letter functions */
-            selectedElements[Start][2].sort(function(a, b) {
-                return a - b;
-            });
+            if (!reset) {
+                coveringMatrix[Start][2].sort(Sorting2DArray);
+            }
+            // console.table(coveringMatrix[Start][2]);
             /* A New Connection Created (1) or A Connection Removed (-1) */
             if (connected == 1) {
                 poset.stroke();
@@ -921,7 +1154,7 @@
             }
         } /* ConnectLine(Start, End) END */
 
-    }
+    } // END if (typeof(poset) !== undefined)
 
     /* ============================================================ */
     /* Is Start & End connectable? return true or false */
@@ -930,29 +1163,25 @@
         // console.log("Here Start =", Start, " & End =", End);
         /* is Start Cover By Any Elements? */
         if (
-            selectedElements[Start][2] != undefined &&
-            selectedElements[Start][2] != null &&
-            selectedElements[Start][2].length
+            coveringMatrix[Start][2]?.[0] != undefined
         ) {
             // console.log(Start, "is covered by: ");
-            // console.table(selectedElements[Start][2]);
-            let StartL = selectedElements[Start][2].length;
+            // console.table(coveringMatrix[Start][2]);
+            let StartL = coveringMatrix[Start][2].length;
             for (let ii = 0; ii < StartL; ii++) {
                 /* ii'th Element is cover of "Start" */
-                let cover = selectedElements[Start][2][ii];
+                let cover = coveringMatrix[Start][2][ii];
                 // console.log("Searching ",cover);
 
                 /* is "cover" also cover of "End" => made a triangle as 'CUP' shape */
                 if (
-                    selectedElements[End][2] != undefined &&
-                    selectedElements[End][2] != null &&
-                    selectedElements[End][2].length
+                    coveringMatrix[End][2]?.[0] != undefined
                 ) {
                     // console.log(End, "is covered by: "),
-                    // console.table(selectedElements[End][2]);
+                    // console.table(coveringMatrix[End][2]);
 
                     /* if "cover" is also cover of End */
-                    let foundI = selectedElements[End][2].findIndex(function(element) {
+                    let foundI = coveringMatrix[End][2].findIndex(function(element) {
                         return element === cover;
                     });
                     if (foundI != -1) {
@@ -968,18 +1197,16 @@
                  */
 
                 /* Is End Cover "Start's Cover" or any of it'a cover. => made a 'initial-moon' shape*/
-                // console.table(selectedElements);
-                // console.table(selectedElements[ii]);
+                // console.table(coveringMatrix);
+                // console.table(coveringMatrix[ii]);
                 if (
-                    selectedElements[cover][2] != undefined &&
-                    selectedElements[cover][2] != null &&
-                    selectedElements[cover][2].length
+                    coveringMatrix[cover][2]?.[0] != undefined
                 ) {
                     // console.log(cover, "is covered by: "),
-                    //   console.table(selectedElements[cover][2]);
+                    //   console.table(coveringMatrix[cover][2]);
 
                     /* is 2nd Element (Start's Cover) is covered by End */
-                    let foundI = selectedElements[cover][2].findIndex(function(element) {
+                    let foundI = coveringMatrix[cover][2].findIndex(function(element) {
                         // console.log(element, " ?= ", End);
                         return element === End;
                     });
@@ -995,9 +1222,9 @@
                         // );
                         /* If All is > End Then Start & End Can be connected */
                         /* cover is not directly covered by End */
-                        let relL = selectedElements[cover][2].length;
+                        let relL = coveringMatrix[cover][2].length;
                         for (let iii = 0; iii < relL; iii++) {
-                            let rel1 = selectedElements[cover][2][iii];
+                            let rel1 = coveringMatrix[cover][2][iii];
                             /* Is rel1 Cover End then must be End is not cover rel1 => End is not cover "cover" (Cover of Start) => End is not cover Start */
                             // return (rel1 < End && relations(rel1))? true : false;
                             if (rel1 < End && relations(rel1)) return true;
@@ -1007,16 +1234,14 @@
                             /* ==================================================== */
                             function relations(rel1) {
                                 if (
-                                    selectedElements[rel1][2] != undefined &&
-                                    selectedElements[rel1][2] != null &&
-                                    selectedElements[rel1][2].length
+                                    coveringMatrix[rel1][2]?.[0] != undefined
                                 ) {
                                     // console.log(rel1, "is covered by"),
-                                    //     console.table(selectedElements[rel1][2]);
-                                    let rel1L = selectedElements[rel1][2].length;
+                                    //     console.table(coveringMatrix[rel1][2]);
+                                    let rel1L = coveringMatrix[rel1][2].length;
 
                                     /* Check if rel1 in covered by END */
-                                    let foundII = selectedElements[rel1][2].findIndex(function(
+                                    let foundII = coveringMatrix[rel1][2].findIndex(function(
                                         element
                                     ) {
                                         return element == End;
@@ -1027,7 +1252,7 @@
                                     } else {
                                         // console.log("Is", rel1, " cover / covered by any element?");
                                         for (let iii = 0; iii < rel1L; iii++) {
-                                            let rel2 = selectedElements[rel1][2][iii];
+                                            let rel2 = coveringMatrix[rel1][2][iii];
                                             if (rel2 < End) {
                                                 /* If rel2 not cover End Or Equal End Then Search Again */
                                                 return relations(rel2);
@@ -1048,18 +1273,16 @@
         /* is Any Elements Cover By Start & End ? made a triangle as 'U' shape */
         for (let i = 0; i < Start; i++) {
             if (
-                selectedElements[i][2] != undefined &&
-                selectedElements[i][2] != null &&
-                selectedElements[i][2].length
+                coveringMatrix[i][2]?.[0] != undefined
             ) {
                 // console.log(i, "is covered by: "),
-                // console.table(selectedElements[i][2]);
+                // console.table(coveringMatrix[i][2]);
                 /* Is 'Start' covers i'th element */
-                let foundS = selectedElements[i][2].findIndex(
+                let foundS = coveringMatrix[i][2].findIndex(
                     (element) => element == Start
                 );
                 /* Is 'End' covers i'th element */
-                let foundE = selectedElements[i][2].findIndex(
+                let foundE = coveringMatrix[i][2].findIndex(
                     (element) => element == End
                 );
 
@@ -1071,7 +1294,7 @@
                 // else {
                 //   console.log("No Element is Found Which is covered by ", Start, End);
                 // }
-            } // if(selectedElements[i][2] != undefined|null|0)
+            } // if(coveringMatrix[i][2] != undefined|null|0)
         }
         // return isCovered;
     } // IsConnectable() END
@@ -1108,7 +1331,7 @@
             //   p,
             //   "\n########################"
             // ),
-            // console.table(selectedElements);
+            // console.table(coveringMatrix);
             for (let j = 0; j < SELength - 1; j++) {
                 /* Heightest element has no cover so SELength-1 */
                 /*
@@ -1118,20 +1341,17 @@
                       => remove p'th element
                       */
                 if (
-                    selectedElements[j][2] != undefined &&
-                    selectedElements[j][2] != null &&
-                    selectedElements[j][2].length &&
-                    j != p
+                    coveringMatrix[j][2]?.[0] != undefined && j != p
                 ) {
                     // console.log("Cover of ", j, "============================\n");
                     /* j'th element has relation to p */
                     /* Search Is j'th element Covered by (<p & j->p) 'p' */
-                    let m = selectedElements[j][2].findIndex((element) => element == p);
+                    let m = coveringMatrix[j][2].findIndex((element) => element == p);
                     if (m > -1 && j < p) {
                         /* If 'p' is cover j */
                         // console.log("Remove ", p, "-cover of", j);
                         /* Delete the p-cover */
-                        selectedElements[j][2].splice(m--, 1);
+                        coveringMatrix[j][2].splice(m--, 1);
                     } // m > -1 && j < p
 
                     // Here p!=j by default in 389 condition
@@ -1142,24 +1362,24 @@
                     //   p,
                     //   "]"
                     // ),
-                    //   console.table(selectedElements[j][2]);
+                    //   console.table(coveringMatrix[j][2]);
                     /* 
                     Search: 
                     => Is j'th element Covered by SEs whose are >p. (Since All SEs > p will reduce by 1). 
                     => If found reduce Relational values by 1 
                     */
-                    let RL = selectedElements[j][2].length;
-                    m = selectedElements[j][2].findIndex((element) => element > p);
+                    let RL = coveringMatrix[j][2].length;
+                    m = coveringMatrix[j][2].findIndex((element) => element > p);
                     if (m > -1) {
                         /* j'th (>p) element's relational values will be reduced by 1 */
                         for (let q = m; q < RL; q++) {
-                            // console.log(selectedElements[j][2][q], "is Decreased to");
-                            selectedElements[j][2][q]--;
-                            // console.log(selectedElements[j][2][q], "in", j);
+                            // console.log(coveringMatrix[j][2][q], "is Decreased to");
+                            coveringMatrix[j][2][q]--;
+                            // console.log(coveringMatrix[j][2][q], "in", j);
                         }
-                        //   console.table(selectedElements[j][2]);
+                        //   console.table(coveringMatrix[j][2]);
                     } // q->RL
-                } // if(selectedElements[j][2] != undefined)
+                } // if(coveringMatrix[j][2] != undefined)
             } // j -> SELength-1
         } else if (U > 0) {
             /* If a new element inserted in 'p' Position */
@@ -1168,7 +1388,7 @@
             //   p,
             //   "\n########################"
             // ),
-            // console.table(selectedElements);
+            // console.table(coveringMatrix);
             /* Update for every Elements */
             for (let j = 0; j < SELength - 1; j++) {
                 /* Heightest element has no cover so SELength-1 */
@@ -1177,30 +1397,28 @@
                       => increase the relational value by 1
                       */
                 if (
-                    selectedElements[j][2] != undefined &&
-                    selectedElements[j][2] != null &&
-                    selectedElements[j][2].length &&
+                    coveringMatrix[j][2]?.[0] != undefined &&
                     j != p
                 ) {
-                    let pL = selectedElements[j][2].length;
+                    let pL = coveringMatrix[j][2].length;
                     /* Increase Relational Values by 1, Since Inserted in p */
-                    let m = selectedElements[j][2].findIndex((element) => element >= p);
+                    let m = coveringMatrix[j][2].findIndex((element) => element >= p);
                     // If covers not sorted then use filter
                     /* Since All Covers are sorted in accending order */
                     if (m > -1) {
                         // console.log("Increase Them by 1 whose are >=", p),
-                        // console.table(selectedElements[j]);
+                        // console.table(coveringMatrix[j]);
                         for (let ji = m; ji < pL; ji++) {
-                            // console.log(selectedElements[j][2][ji], "is increased to");
-                            selectedElements[j][2][ji]++;
-                            // console.log(selectedElements[j][2][ji]);
+                            // console.log(coveringMatrix[j][2][ji], "is increased to");
+                            coveringMatrix[j][2][ji]++;
+                            // console.log(coveringMatrix[j][2][ji]);
                         }
                         // console.log("Updated Now"),
-                        // console.table(selectedElements[j]);
+                        // console.table(coveringMatrix[j]);
                     } //(m > -1)
-                } // if(selectedElements[j][2] != undefined)
+                } // if(coveringMatrix[j][2] != undefined)
             } // j-> SELength-1
-        } // U>0
+        } // U>0 nothing do for U == 0
     } /* UpdateRelations(p) END */
 
     /* ============================================================  */
@@ -1249,7 +1467,7 @@
                 xCurrent >= x - 5 &&
                 yCurrent >= x - 5 &&
                 xCurrent <= width - x + 5 &&
-                yCurrent <= height - x + 5 && selectedElements.length > 1
+                yCurrent <= height - x + 5 && coveringMatrix.length > 1
             ) {
                 ShowConnection(xCurrent, yCurrent);
             }

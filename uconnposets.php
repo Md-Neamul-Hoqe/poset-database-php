@@ -1,6 +1,7 @@
 <?php
 include "header.php";
 ?>
+
 <title>Account Of Posets</title>
 </head>
 
@@ -49,11 +50,14 @@ include "header.php";
         /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Funtion SearchPosets @@@@@@@@@@@@ */
         /* Search All Posets With Height For Certain Order -> index.php */
         function tableFormate($tableName, $nelements)
-        { ?>
+        {
+
+            include "db_conn.php";
+        ?>
             <table class="table table-striped-columns table-striped text-center">
                 <thead>
                     <tr class="text-center fs-3">
-                        <th colspan="<?php echo $nelements + 1; ?>" class="text-capitalize">No. of Unlabeled <?php echo $tableName ?> Posets With <?php echo $nelements ?> Elements</th>
+                        <th colspan="<?php echo $nelements + 1; ?>" class="text-capitalize">No. of Unlabeled <?= ($tableName == 'connposets') ? 'Connected' : 'Disconnected'; ?> Posets With <?php echo $nelements ?> Elements</th>
                     </tr>
                 </thead>
                 <?php
@@ -98,7 +102,6 @@ include "header.php";
                             } else if ($i < $nelements && $j < $nelements && $j > 0) {
 
                                 /* Fill The Inner Cells*/
-                                include "db_conn.php";
                                 // $numElements = "SELECT $tableName.`Matrix` FROM `$tableName` WHERE `MatrixOrder` =  $nelements AND `Height` = $n AND `Width` = $j";
                                 $numElements = "SELECT $tableName.`Matrix` FROM `$tableName` WHERE `MatrixOrder` =  $nelements && `Height` = $n";
                                 $resultE = mysqli_query($conn, $numElements) or die("Some Error Found.");
@@ -113,7 +116,7 @@ include "header.php";
                                 <script>
                                     /* Save the value for Height */
                                     var save1 = document.getElementById('<?php echo "$n-$j" ?>').innerHTML;
-                                    totalH += parseInt(save1, 10);
+                                    totalH += parseInt(save1, 10); // 'save1' string to integer  as decimal number
 
                                     /* Save the value for Width */
                                     var save2_<?= $j ?> = document.getElementById('<?php echo "$n-$j" ?>').innerHTML;
@@ -122,7 +125,7 @@ include "header.php";
                                     // console.log(totalW_<?= $j ?>);
                                 </script>
                             <?php
-                                mysqli_close($conn);
+                                // mysqli_close($conn);
                             } else if ($i == $nelements && $j < $nelements) { ?>
                                 <td class='text-center;' id='<?= "TW-$n-$j" ?>'><?= "TW" ?></td>
                                 <script>
@@ -144,7 +147,7 @@ include "header.php";
                     } /* Row ($i) End */
                 } else {
 
-                    /* Disconnected Posets */
+                    /* For Disconnected Posets */
                     $n =  0; // Indexing (Header) of Height
                     for ($i = 0; $i <= $nelements; $i++) { // Height loop $i
                         echo "<tr>"; ?>
@@ -155,9 +158,9 @@ include "header.php";
                         <?php
                         for ($j = 0; $j <= $nelements; $j++) {
                             if ($i == 0) {
-                                /* Header for Width */
+                                /* Header for Width in 1st row */
                                 if ($j == 0) {
-                                    echo "<th id='widthHight' class='text-center fs-5'><canvas id='Diagonal' class='bg-transparent border-0' width='100%' height='100%'></canvas><span>No.&nbsp;of&nbsp;Direct&nbsp;Terms&nbsp;&Downarrow; </span><span>No.&nbsp;of&nbsp;&Rightarrow;</span></th>";
+                                    echo "<th id='widthHight' class='text-center fs-5'><canvas id='Diagonal' class='bg-transparent border-0' width='100%' height='100%'></canvas><span class='fs-6'>No.&nbsp;of&nbsp;Direct&nbsp;Terms&nbsp;&Downarrow; </span><span class='fs-6'>No.&nbsp;of&nbsp;&Rightarrow;</span></th>";
                                 } else if ($j == $nelements) {
                                     echo "<th class='text-center; fs-5'>Total</th>";
                                 } else {
@@ -170,20 +173,28 @@ include "header.php";
                                 }
                                 /* Header for Width END */
                             } else if ($j == 0 && $i != $nelements) {
-                                /*Header For Height */
+                                /* Header For Height in 1st column */
                                 echo "<th class='text-center; fs-5'>";
                                 echo $n = $i + 1;
                                 echo "</th>";
                             } else if ($j == 0) {
-                                echo "<th class='text-center; fs-5'>Total</th>";
+                                echo "<th class='text-center fs-5'>Total</th>";
                                 /*Header For Height END */
                             } else if ($i < $nelements && $j < $nelements && $j > 0) {
 
                                 /* Fill The Inner Cells*/
-                                include "db_conn.php";
+                                // include "db_conn.php";
                                 // $numElements = "SELECT $tableName.`Matrix` FROM `$tableName` WHERE `MatrixOrder` =  $nelements AND `Height` = $n AND `Width` = $j";
                                 $numElements = "SELECT $tableName.`Matrix` FROM `$tableName` WHERE `MatrixOrder` =  $nelements && `Height` = $n";
-                                $resultE = mysqli_query($conn, $numElements);
+                                // echo $numElements."<br/>";
+
+                                // $resultE = mysqli_query($conn, $numElements);
+                                $resultE = mysqli_query($conn, $numElements) or die("<p class='error'>Please try again later. We are working hard to update our database.</p>");
+                                // if(!$resultE){
+                                //     // echo ;
+                                //     ;
+                                // }
+                                // $numE = mysqli_num_rows($resultE);
                                 $numE = $resultE->num_rows;
                                 // echo "<pre>";
                                 // print_r($resultE);
@@ -204,7 +215,7 @@ include "header.php";
                                     // console.log(totalW_<?= $j ?>);
                                 </script>
                             <?php
-                                mysqli_close($conn);
+
                             } else if ($i == $nelements && $j < $nelements) { ?>
                                 <td class='text-center;' id='<?= "TWD-$n-$j" ?>'><?= "TW" ?></td>
                                 <script>
@@ -228,7 +239,8 @@ include "header.php";
                 ?>
             </table>
         <?php
-        }
+            mysqli_close($conn);
+        } // CLOSED function tableFormate($tableName, $nelements)
 
         ?>
 

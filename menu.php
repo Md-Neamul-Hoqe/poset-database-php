@@ -1,6 +1,6 @@
 <?php
-include "db_conn.php";
 session_start();
+include "db_conn.php";
 ?>
 <nav class="navbar navbar-expand-md navbar-light border bg-white shadow fixed-top">
     <div class="container-fluid">
@@ -9,13 +9,12 @@ session_start();
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="mynavbar">
-            <!-- <nav class="navbar-nav me-auto"> -->
             <ul id="menu-bar" class="navbar-nav mx-auto">
                 <?php
                 if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) { ?>
                     <li class="nav-item"><a class="fs-3 nav-link active" href="./index.php">Home</a></li>
-                    <li class="nav-item"><a class="fs-3 nav-link" href="./upload.php">Add More</a></li>
-                    <li class="nav-item"><a class="fs-3 nav-link" href="./table.php">Search Posets</a></li>
+                    <li class="nav-item"><a class="fs-3 nav-link" href="./upload.php">Upload</a></li>
+                    <li class="nav-item"><a class="fs-3 nav-link" href="./table.php">Search</a></li>
                     <li class="nav-item"><a class="fs-3 nav-link" href="./logout.php">Logout</a></li>
                 <?php
                 } else {
@@ -46,7 +45,8 @@ session_start();
                     } ?>
             </form>
         <?php
-                }
+
+                } // END if-else
         ?>
         </div> <!-- END #mynavbar -->
     </div> <!-- END container-fluid -->

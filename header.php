@@ -1,4 +1,3 @@
-<?php include "db_conn.php"; ?>
 <!doctype html>
 <html lang="en">
 
@@ -19,4 +18,4 @@
     <link rel="stylesheet" href="./styles/fonts/Exo-Thin.ttf">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="./styles/assets/images/images_PS.png" type="image/x-icon">
+    <link rel="shortcut icon" href="./styles/assets/images/PD-logo.png" type="image/x-icon">

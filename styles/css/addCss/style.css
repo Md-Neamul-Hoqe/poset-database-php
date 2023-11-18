@@ -1,40 +1,21 @@
-/*****************************************
-Table Of Contents:
-- General Styles
-- Button
-- Back To Top Button
-- Navigation
-- Header Section
-- Content Section Start
-- Footer Section
-- Media Queries
-******************************************/
+@import url(https://fonts.googleapis.com/css2?family=Exo+2:wght@100&family=Exo:wght@100&display=swap);
 
-/**************************/
-/*     General Styles     */
-/**************************/
-
-
-/* Fonts Online Link */
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@100&family=Exo:wght@100&display=swap');
-
-/* Remove After Live Upload */
 @font-face {
-	font-family: "Exo 2";
-	src: url(../../fonts/Exo2-Thin.ttf);
+    font-family: "Exo 2";
+    src: url(../../fonts/Exo2-Thin.ttf)
 }
 
 * {
-	font-family: sans-serif;
-	box-sizing: border-box;
+    font-family: sans-serif;
+    box-sizing: border-box
 }
 
 body {
-	font-size: 1rem;
-	min-width: 600px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
+    font-size: 1rem;
+    min-width: 600px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto
 }
 
 h1,
@@ -43,327 +24,267 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: "Poppins", sans-serif;
+    font-family: "Poppins", sans-serif
 }
 
 h1 {
-	text-align: center;
+    text-align: center
 }
 
-/* LOGIN Page Header */
 h2 {
-	text-align: center;
-	margin-bottom: 40px;
+    text-align: center;
+    margin-bottom: 40px
 }
 
 a:hover {
-	opacity: .7;
+    opacity: .7
 }
 
 .disabled,
 .disabled:hover {
-	color: black;
-	cursor: default;
-	opacity: 1;
+    color: #000;
+    cursor: default;
+    opacity: 1
 }
 
-
 canvas[id=poset] {
-	cursor: pointer;
+    cursor: pointer
 }
 
 canvas[id|=poset] {
-	transform: rotate(-90deg);
+    transform: rotate(-90deg)
 }
 
 #poset~a {
-	top: 100px;
+    top: 100px
 }
 
 #IsOff>span {
-	margin-top: 0;
-	padding-top: 0;
-	font-size: small;
+    margin-top: 0;
+    padding-top: 0;
+    font-size: small
 }
 
 .fixed-right {
-	font-size: larger;
-	top: 0%;
-	right: 5%;
-	max-width: 15%;
+    font-size: larger;
+    top: 0%;
+    right: 5%;
+    max-width: 15%
 }
 
-/* Matrix Formating */
 :root {
-	--morder-font-size: 3.175rem;
+    --morder-font-size: 3.175rem
 }
 
 .border-start-end::before {
-	position: absolute;
-	font-family: 'Exo 2', 'Exo', serif;
-	content: '[';
-	left: -30px;
-	/* for Exo -40% */
-	top: -50%;
-	font-size: var(--morder-font-size);
-	color: #00000070;
+    position: absolute;
+    font-family: 'Exo 2', 'Exo', serif;
+    content: '[';
+    left: -30px;
+    top: 50%;
+    font-size: var(--morder-font-size);
+    color: #00000070
 }
 
 .border-start-end::after {
-	position: absolute;
-	font-family: 'Exo 2', 'Exo', serif;
-	content: ']';
-	right: -30px;
-	/* for Exo -40% */
-	top: -50%;
-	font-size: var(--morder-font-size);
-	color: #00000070;
+    position: absolute;
+    font-family: 'Exo 2', 'Exo', serif;
+    content: ']';
+    right: -30px;
+    top: 50%;
+    font-size: var(--morder-font-size);
+    color: #00000070
 }
 
-/***********************************/
-/* Back To Top  & Back Page Button */
-/***********************************/
 #myBtn {
-	position: fixed;
-	width: 40px;
-	height: 40px;
-	right: 20px;
-	bottom: 20px;
-	z-index: 999999999;
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 999999999
 }
 
 #backPage {
-	position: fixed;
-	width: 40px;
-	height: 40px;
-	left: 20px;
-	top: 90px;
-	z-index: 999999999;
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    left: 20px;
+    top: 90px;
+    z-index: 999999999
 }
 
 #myBtn:hover,
 #backPage:hover {
-	background-color: #00000001;
-	border-radius: 50%;
+    background-color: #00000001;
+    border-radius: 50%
 }
 
 #myBtn img,
 #backPage img {
-	width: 40px;
+    width: 40px
 }
 
-
-/**********************/
-/*     Navigation     */
-/**********************/
 .navbar-brand {
-	font-family: 'Galada', fantasy, cursive, sans-serif;
+    font-family: 'Galada', fantasy, cursive, sans-serif
 }
 
-/* Dropdown Menu */
 .navbar .dropdown .dropdown-menu {
-	animation: fadeDropdown 0.2s ease-in;
-	/* required for the fade animation */
+    animation: fadeDropdown 0.2s ease-in
 }
 
 @-webkit-keyframes fadeDropdown {
-	0% {
-		opacity: 0;
-	}
+    0% {
+        opacity: 0
+    }
 
-	100% {
-		opacity: 1;
-	}
+    100% {
+        opacity: 1
+    }
 }
 
 @keyframes fadeDropdown {
-	0% {
-		opacity: 0;
-	}
+    0% {
+        opacity: 0
+    }
 
-	100% {
-		opacity: 1;
-	}
+    100% {
+        opacity: 1
+    }
 }
-
-/**
-*   #############################################################
-*   Header Section Start
-*   #############################################################
-**/
 
 #search-section {
-	width: 100%;
+    width: 100%
 }
 
-
 .output {
-	text-align: center;
-	border-radius: 0 0 15px 15px;
-	width: 90%;
-	border: 0px solid #ccc;
-	padding: 30px;
-	background: #fff;
+    text-align: center;
+    border-radius: 0 0 15px 15px;
+    width: 90%;
+    border: 0 solid #ccc;
+    padding: 30px;
+    background: #fff
 }
 
 input,
 textarea {
-	display: block;
-	border: 2px solid #ccc;
-	width: 95%;
-	padding: 10px;
-	margin: 10px auto;
-	border-radius: 5px;
+    display: block;
+    border: 2px solid #ccc;
+    width: 95%;
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 5px
 }
 
 label {
-	font-size: 1rem;
-	padding: 10px;
+    font-size: 1rem;
+    padding: 10px
 }
 
-/**
-*   #############################################################
-*   Content Section Start
-*   #############################################################
-**/
 .content-wrapper {
-	width: 90%;
-	margin-left: auto;
-	margin-right: auto;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto
 }
 
 #searchedTable,
 #Height-searchedTable {
-	width: 100%;
+    width: 100%
 }
 
 #searchedTable td a,
 #searchedTable {
-	color: rgb(0, 5, 60);
-	text-decoration: none;
+    color: rgb(0, 5, 60);
+    text-decoration: none
 }
 
 #searchedTable td,
 #searchedTable th {
-	text-align: center;
+    text-align: center
 }
 
 #widthHight {
-	position: relative;
-	height: 60px;
+    position: relative;
+    height: 60px
 }
 
 #widthHight span {
-	position: absolute;
-	z-index: 2;
+    position: absolute;
+    z-index: 2
 }
 
 #widthHight span:nth-child(3) {
-	top: 5px;
-	right: 5px;
+    top: 5px;
+    right: 5px
 }
 
 #widthHight span:nth-child(2) {
-	left: 10px;
-	bottom: 0;
+    left: 10px;
+    bottom: 0
 }
 
 #Diagonal {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
-	z-index: -99;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -99
 }
 
 .updateTable tr:nth-child(2) td,
 .dataTable tr td {
-	border-bottom: 1px solid green;
-	padding-top: 10px;
-	padding-bottom: 10px;
+    border-bottom: 1px solid green;
+    padding-top: 10px;
+    padding-bottom: 10px
 }
 
 .dataTable {
-	width: 90%;
-	border: 2px solid #ccc;
-	padding: 30px;
-	border-radius: 15px 15px 0 0;
+    width: 90%;
+    border: 2px solid #ccc;
+    padding: 30px;
+    border-radius: 15px 15px 0 0
 }
 
 #LogIn .error {
-	color: #A94442;
-	background: #F2DEDE;
-	border-radius: 5px;
-	text-align: left;
-	padding: 5px;
+    color: #A94442;
+    background: #F2DEDE;
+    border-radius: 5px;
+    text-align: left;
+    padding: 5px
 }
 
 #LogIn button {
-	margin-top: 10px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px
 }
 
 .error {
-	text-align: center;
-	background: #F2DEDE;
-	padding: 10px;
-	width: 95%;
-	border-radius: 5px;
-	margin: 20px auto;
-	color: #A94442;
-	line-height: 250%;
+    text-align: center;
+    background: #F2DEDE;
+    padding: 10px;
+    width: 95%;
+    border-radius: 5px;
+    margin: 20px auto;
+    color: #A94442;
+    line-height: 250%
 }
 
 .success-null {
-	text-align: center;
-	background: #F2DEDE;
-	padding: 10px;
-	width: 95%;
-	border-radius: 5px;
-	margin: 20px auto;
-	color: #1100ff;
+    text-align: center;
+    background: #F2DEDE;
+    padding: 10px;
+    width: 95%;
+    border-radius: 5px;
+    margin: 20px auto;
+    color: #10f
 }
 
-/**
-*   #############################################################
-*   Footer Section Start
-*   #############################################################
-**/
 .copyright {
-	display: block;
-	position: relative;
-	bottom: 0;
-	text-align: center;
-	margin-top: 30px;
-}
-
-/**
-*   #############################################################
-*   Media Queries From small to large devices 
-*   #############################################################
-**/
-@media screen and (max-width: 575px) {
-	/* Styles for EXTRA SMALL [Android Portrait] devices */
-}
-
-@media screen and (min-width: 576px) {
-	/* Styles for SMALL [Android Landscape] devices */
-}
-
-@media screen and (min-width: 768px) {
-	/* Styles for MEDIUM [Tab Portrait] devices */
-}
-
-@media screen and (min-width: 992px) {
-	/* Styles for LARGE [Tab Landscape] devices */
-}
-
-@media screen and (min-width: 1200px) {
-	/* Styles for EXTRA LARGE [Small Desktop/Laptop] devices */
-}
-
-@media screen and (min-width: 1400px) {
-	/* Styles for EXTRA EXTRA LARGE [Large Desktop Screen] devices */
+    display: block;
+    position: relative;
+    bottom: 0;
+    text-align: center;
+    margin-top: 30px
 }
