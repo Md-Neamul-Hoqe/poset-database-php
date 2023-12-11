@@ -81,7 +81,7 @@ canvas[id|=poset] {
     font-family: 'Exo 2', 'Exo', serif;
     content: '[';
     left: -30px;
-    top: 50%;
+    top: -50%;
     font-size: var(--morder-font-size);
     color: #00000070
 }
@@ -91,7 +91,7 @@ canvas[id|=poset] {
     font-family: 'Exo 2', 'Exo', serif;
     content: ']';
     right: -30px;
-    top: 50%;
+    top: -50%;
     font-size: var(--morder-font-size);
     color: #00000070
 }

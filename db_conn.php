@@ -1,33 +1,30 @@
 <?php
-// Define database informations 
-$sname = "localhost";
-$unmae = "root";
-$password = "";
-$db_name = "posets";    // Check Database Name Before.
+include("env.php");
+
+// Define database information 
+$sname = getenv('DB_HOST');
+$unmae = getenv('DB_USER');
+$password = getenv('DB_PASS');
+$db_name = getenv('DB_NAME');    // Check Database Name Before.
+
 
 // Connect to the database
 $conn = mysqli_connect($sname, $unmae, $password, $db_name);       //   no need write any thing in die() for server connection problem.
 
+echo $conn->error;
+
 if (!$conn) {
     header("location: ./404.php");
     exit();
-}
+} 
+// else {
+//     header("location: ./index.php");
+//     exit();
+// }
 
 if (!mysqli_query($conn, "SELECT `allposets`.`idx` FROM posets.`allposets` LIMIT 1;")) {
     echo "<div class='error' style='margin-top: 10rem'>Please Upload Data To The Database To See The Web Page Properly.</div>";
-    // header("location: ./404.php");
+    header("location: ./404.php");
     exit();
 }
 ?>
-
-
-
-<!-- CREATE TABLE `posets`.`users`(
-    `id` TINYINT(11) NOT NULL AUTO_INCREMENT,
-    `user_name` VARCHAR(11) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    PRIMARY KEY(`id`),
-    UNIQUE(`user_name`),
-    UNIQUE `Password`(`password`)
-    ) ENGINE = InnoDB; -->
-<!-- INSERT INTO `users` (`id`, `user_name`, `password`) VALUES (NULL, 'neamul', '@@@'), (NULL, 'msu', 'msu'); -->

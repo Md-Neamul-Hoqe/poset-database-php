@@ -92,7 +92,7 @@ include "script.php";
 
                     $Height = (isset($HeightWidth["Height"]) && $HeightWidth) ? $HeightWidth["Height"] : 0;
                     $Width = (isset($HeightWidth["Width"]) && $HeightWidth) ? $HeightWidth["Width"] : 0;
-                    echo $Height, $Width;
+                    // echo $Height, $Width;
                 }
                 echo '<div class="row"><div class="col fs-5 mt-3">';
                 /* Header of The Poset */
@@ -116,7 +116,7 @@ include "script.php";
 
             $table = $_GET["Table"];
             if ($table == "connposets") {
-                echo "Connected Posets";
+                // echo "Connected Posets";
                 $Height = $_GET["Height"] | 0;
                 $Width = $_GET["Width"] | 0;
 

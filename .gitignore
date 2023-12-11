@@ -1,3 +1,4 @@
+.**
 .tmp.driveupload/
 .tmp.driveupload/27994
 .tmp.driveupload/27998
@@ -909,6 +910,6 @@ styles/josefin-sans (1).zip
 .tmp.driveupload/29496
 .tmp.driveupload/29498
 .tmp.driveupload/29500
-.tmp.drivedownload/
+.tmp.drivedownload/**
 desktop.ini
 ./desktop.ini

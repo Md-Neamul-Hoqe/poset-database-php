@@ -36,13 +36,13 @@ include "header.php";
 
     </main>
     <script>
-        myDiag = document.getElementById("Diagonal").getContext("2d");
-        width = myDiag.width;
-        height = myDiag.height;
+        myDiag = document.getElementById("Diagonal")?.getContext("2d");
+        width = myDiag?.width;
+        height = myDiag?.height;
 
-        myDiag.moveTo(0, 0);
-        myDiag.lineTo(100, 100);
-        myDiag.stroke();
+        myDiag?.moveTo(0, 0);
+        myDiag?.lineTo(100, 100);
+        myDiag?.stroke();
     </script>
     <footer class="big-footer">
         <!-- This is footer part of the page  -->

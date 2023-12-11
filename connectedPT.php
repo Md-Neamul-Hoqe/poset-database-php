@@ -49,14 +49,14 @@ function connectedPosetsTable($tableName, $nelements, $Total)
                 } else if ($i < $nelements && $j < $nelements && $j > 0) {
 
                     /* Fill The Inner Cells*/
-                    echo $tableName, "<br>", $nelements, "<br>", $n, "<br>", $j;
+                    // echo $tableName, "<br>", $nelements, "<br>", $n, "<br>", $j;
 
                     $numElements = "SELECT $tableName.`Matrix` FROM `$tableName` WHERE `MatrixOrder` =  $nelements && `Height` = $n && `Width` = $j";
                     $resultE = mysqli_query($conn, $numElements) or die("Some Error Found.");
                     $numE = $resultE->num_rows;
-                    echo '<pre>';
-                    print_r($numE);
-                    echo '</pre>';
+                    // echo '<pre>';
+                    // print_r($numE);
+                    // echo '</pre>';
 
                     echo "<td><a id='$n-$j' href='search.php?Order=$nelements&Height=$n&Width=$j&Table=$tableName' class='text-decoration-none'>$numE</a></td>";
                     ?>

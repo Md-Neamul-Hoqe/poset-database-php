@@ -1,17 +1,7 @@
 <?php include "db_conn.php"; ?>
 <!-- Bootstrap 5.2  -->
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles/css/bootstrap.min.css"> <!-- 5.2.2 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="./styles/css/addCss/style.css"> <!-- Custom Css Styles -->
-    <link rel="shortcut icon" href="./styles/assets/images/PD-logo.png" type="image/x-icon">
-    <title>Poset-Matrices || Order Matrix</title>
+<?php include "header.php"; ?>
+<title>Poset-Matrices || Order Matrix</title>
 </head>
 
 <body>
@@ -30,7 +20,7 @@
                 <table class="updateTable w-100">
                     <thead>
                         <tr>
-                        <th colspan="2" class="text-center p-2 fs-4 border border-3 border-warning">
+                            <th colspan="2" class="text-center p-2 fs-4 border border-3 border-warning">
                                 <?php
                                 if (isset($_GET['action']) && $_GET['action'] == 'update') {
                                     $id = (int)$_GET['id'];
@@ -42,10 +32,12 @@
                     <tbody>
                         <tr>
                             <!-- Index automatic generated -->
-                            <td><label for="morder">Enter The Order of The Matrix</label><input type="number"    data-bs-toggle='tooltip' title="Enter The Order of The Matrix" name="morder" id="POrder" placeholder="<?php echo isset($_GET['MOrder']) ? $_GET['MOrder'] : NULL; ?>"></td>
+                            <td><label for="morder">Enter The Order of The Matrix</label><input type="number" data-bs-toggle='tooltip' title="Enter The Order of The Matrix" name="morder" id="POrder" placeholder="<?php echo isset($_GET['MOrder']) ? $_GET['MOrder'] : NULL; ?>"></td>
                         </tr>
                         <tr>
-                            <td><label for="matrix">Enter the Matrix</label><pre><textarea name="matrix" id="Matrix" cols="30" rows="5" placeholder="<?php echo isset($_POST['matrix']) ? $_POST['matrix'] : ''; ?>"></textarea></pre></td>
+                            <td><label for="matrix">Enter the Matrix</label>
+                                <pre><textarea name="matrix" id="Matrix" cols="30" rows="5" placeholder="<?php echo isset($_POST['matrix']) ? $_POST['matrix'] : ''; ?>"></textarea></pre>
+                            </td>
                         </tr>
                         <tr>
                             <td>Enter the Matrix File</td>
@@ -102,13 +94,13 @@
         ?>
         </section>
         <script>
-          /**
-           *  Customized Basic Scripts [If Needed]
-           */
-          $("[data-bs-toggle='tooltip']").tooltip();
-        const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle='tooltip']");
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-     </script>
+            /**
+             *  Customized Basic Scripts [If Needed]
+             */
+            $("[data-bs-toggle='tooltip']").tooltip();
+            const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle='tooltip']");
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
 </body>
 
 </html>

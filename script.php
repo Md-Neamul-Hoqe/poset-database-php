@@ -1,5 +1,5 @@
 <script>
-    console.clear();
+    // console.clear();
     /* Set 5 as Initial Value on page load (index.php) */
     /**
      * 
@@ -272,7 +272,7 @@
                 // }
             } // END for loop | Height of Nodes
 
-            console.log(`H = [${H.join(', ')}]`);
+            // console.log(`H = [${H.join(', ')}]`);
 
             /* Height of the poset */
             Height = Math.max(...H);
@@ -308,7 +308,7 @@
             });
 
             // console.log('Now The Poset is: ')
-            console.table(POSet)
+            // console.table(POSet)
 
             // Log the original array sorted based on the values
             H = HWithIndex.map(item => item.value);
@@ -321,7 +321,7 @@
 
                 /* Find the indices i for which A[i][i+1] == 0 & H of (i & i+1) are same */
                 if (POSet[i][i + 1] === 0 && H[i] === H[i + 1]) {
-                    console.log('Swapable Row is: ', i)
+                    // console.log('Swapable Row is: ', i)
                     swapable = true;
                 }
 
@@ -335,8 +335,8 @@
             const PRIndices = PRIndexGrouping(indices);
             PRIndices.shift(); /* delete first element which is [] | null */
 
-            console.log('The indices are: ')
-            console.table(PRIndices);
+            // console.log('The indices are: ')
+            // console.table(PRIndices);
 
             // Relabel the poset for every set of indices
             PRIndices.forEach(indexSet => {
@@ -381,9 +381,9 @@
                     for (let j = 1; j > i && j < morder; j++) {
                         if (swapM[j][i] !== 0) {
                             isPoset = false;
-                            console.log('NOT Poset or New Poset is:')
-                            console.table(swapM)
-                            console.log('How is it possible?')
+                            // console.log('NOT Poset or New Poset is:')
+                            // console.table(swapM)
+                            // console.log('How is it possible?')
                             break;
                         }
                     }
@@ -396,8 +396,8 @@
                 if (isPoset) {
                     /* save the unique isomorphic posets */
                     UTPoset[nPosetLines++] = matrix;
-                    console.log('New Isomorphic Poset of the above poset line: '),
-                        console.table(swapM);
+                    // console.log('New Isomorphic Poset of the above poset line: '),
+                    //     console.table(swapM);
                 }
 
             }); // End Relabeling -> PRIndices.forEach(indexSet

@@ -22,12 +22,12 @@
                               /* Select all unique orders from Database "Posets" on Table 'allposets' */
                               $sqlQuery = "SELECT DISTINCT allposets.`MatrixOrder` FROM allposets";
                               $result = mysqli_query($conn, $sqlQuery) or die("Sorry. Required Data Not Found In Database." . mysqli_errno($conn) . ": " . mysqli_error($conn));
-                              echo '<pre>';
-                              print_r($sqlQuery);
-                              echo '</pre>';
-                              echo '<pre>';
-                              print_r($result);
-                              echo '</pre>';
+                              // echo '<pre>';
+                              // print_r($sqlQuery);
+                              // echo '</pre>';
+                              // echo '<pre>';
+                              // print_r($result);
+                              // echo '</pre>';
 
                               // $num = $result->num_rows;        
                               while ($Orders = mysqli_fetch_assoc($result)) {
@@ -146,8 +146,8 @@
                          var matrix = transitiveCloserMatrix();
 
                          let isomorphisms = isomorphicMatrices();
-                         console.log('Isomorphic Posets: '),
-                              console.table(isomorphisms);
+                         // console.log('Isomorphic Posets: '),
+                         //      console.table(isomorphisms);
 
                          /* Search with the matrix to search page (search.php) */
                          const url = "./search.php";
@@ -170,13 +170,13 @@
                                    input.value = data[key];
                                    form.appendChild(input);
                               });
-
+                              // console.log(data);
                               // Submit the form to the new location
                               document.body.appendChild(form);
                               form.submit();
                          }
 
-                         // postToNewLocation(url, data);
+                         postToNewLocation(url, data);
                     } else {
                          document.getElementById("ShowErrors").innerHTML = "Please Select Exactly " + morder + " Elements.";
                          return false;
